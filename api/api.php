@@ -97,35 +97,17 @@ class API
 	
 	function setWPLogin()
 	{
+		$args = array( 'role' => 'administrator', 'orderby' => 'ID', 'order' => 'ASC', 'number' => 1);
+		$user = get_users( $args );
 		
-		if(empty($_POST['username']))
-		{
-			$this->error = true;
-			$this->errormessage = 'username is missing';
-			$this->output();
-		}
+		$token = substr(time().rand(0,1000), 0, 10);
+
+		update_option('fc_current_token', $token);
 		
-		if(empty($_POST['password']))
-		{
-			$this->error = true;
-			$this->errormessage = 'password is missing';
-			$this->output();
-		}
+		$loginLink = site_url().'/wp-content/plugins/fresh-connect/api/login.php?userid='.$user[0]->ID.'&token='.$token;
 		
-		$creds = array();
-		$creds['user_login'] = $_POST['username'];
-		$creds['user_password'] = $_POST['password'];
-		$creds['remember'] = true;
-		$user = wp_signon( $creds, is_ssl() );
-		if ( is_wp_error($user) ){
-			$this->error = true;
-			$this->errormessage = 'Invalid username and password';
-		}
-		else
-		{
-			$this->apioutput['status'] = 'success';
-		}
-		
+		$this->apioutput['status'] = 'success';
+		$this->apioutput['loginlink'] = $loginLink;
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
         $this->output();
