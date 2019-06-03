@@ -1,14 +1,16 @@
 <?php
-require('../../../../wp-load.php');
-require('api.php');
+require_once('../../../../wp-load.php');
+require_once('../inc/WordPress/Context.php');
+$context = new FastPress_Context();
 
-if( isset($_POST) )
+require_once('../inc/WordPress/GetState.php');
+require_once('api.php');
+
+if(isset($_POST))
 {
-	$siteurl = get_option('siteurl');
-	$siteurl = str_replace('http://', '', $siteurl);
-	$siteurl = str_replace('https://', '', $siteurl);
-	$client_id = get_option('fc_client_app_id');
-	$secret_id = get_option('fc_client_app_secret_id');
+	$fp_status = get_option('fresh_connect_status');
+	$con_key = get_option('fp_connection_keys');
 	
-	$api = new API($client_id, $secret_id, $siteurl);
+	$getstate = new Fastpress_Action_GetState($context);
+	$api = new API($context, $getstate, $fp_status, $con_key);
 }
