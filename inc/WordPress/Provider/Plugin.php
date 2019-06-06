@@ -105,6 +105,60 @@ class FastPress_Provider_Plugin
 
         return $plugins;
     }
+    
+    public function edit_plugins($args)
+    {
+		@include_once ABSPATH.'wp-admin/includes/file.php';
+		@include_once ABSPATH.'wp-admin/includes/plugin.php';
+        extract($args);
+        $return = array();
+		
+		if(empty($items)) {
+			$return['error'] = "Invalid arguments";
+		}else {
+			foreach ($items as $item) {
+				$networkwide = isset($item['networkWide']) ? $item['networkWide'] : false;
+				switch ($item['edit_action']) {
+					case 'activate':
+						$result = activate_plugin($item['path'], '', $networkwide);
+						break;
+					case 'deactivate':
+						$result = deactivate_plugins(
+							array(
+								$item['path'],
+							),
+							false,
+							$networkwide
+						);
+						break;
+					case 'delete':
+						$result = delete_plugins(
+							array(
+								$item['path'],
+							)
+						);
+						break;
+					default:
+						break;
+				}
+
+				if (is_wp_error($result)) {
+					$result = array(
+						'error' => $result->get_error_message(),
+					);
+				} elseif ($result === false) {
+					$result = array(
+						'error' => "Failed to perform action.",
+					);
+				} else {
+					$result = "OK";
+				}
+				$return[$item['name']] = $result;
+			}
+		}
+        
+        return $return;
+    }
 
     private function getSlugFromBasename($file)
     {

@@ -114,21 +114,22 @@ class API
         exit();
 	}
 	
-	function getSSLStatus()
+	function getSSLStatus($inCall = false)
 	{
 		$status = $this->context->isSsl();
 		
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['ssl_status'] = $status;
-		$this->apioutput['wp_version'] = $this->wp_version;
 		
-		$this->output();
+		if($inCall === false){
+			$this->output();
+		}
 	}
 	
 	function setSSL()
 	{
-		$value = empty($this->post['ssl_value']) ? '0' : $this->post['ssl_value'];
+		$value = empty($this->post['ssl_status']) ? false : $this->post['ssl_status'];
 		
 		$this->context->setSSL($value);
 		
@@ -157,26 +158,32 @@ class API
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['option_key'] = $option;
 		$this->apioutput['option_value'] = $value;
-		$this->apioutput['wp_version'] = $this->wp_version;
 		
 		$this->output();
 	}
 	
-	function getGeneralOptions()
+	function getGeneralOptions($inCall = false)
 	{
 		$data = $this->getstate->getSiteInfo();
 		
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
-		$this->apioutput['general_options'] = $data;
-		$this->apioutput['wp_version'] = $this->wp_version;
 		
-		$this->output();
+		if(isset($data['error'])){
+			$this->error = true;
+			$this->errormessage = $data['error'];
+		}
+		
+		$this->apioutput['general_options'] = $data;
+		
+		if($inCall === false){
+			$this->output();
+		}
 	}
 	
-	function setGeneralOptions()
+	function setMultipleOptions()
 	{
-		$options = empty($this->post['general_options']) ? null : $this->post['general_options'];
+		$options = is_array($this->post['options']) ? $this->post['options'] : array();
 		
 		$this->context->setMultipleOptions($options);
 
@@ -186,7 +193,7 @@ class API
 		$this->output();
 	}
 	
-	public function getAllThemes()
+	public function getAllThemes($inCall = false)
 	{
 	    $options = is_array($this->post['theme_options']) ? $this->post['theme_options'] : array();
 		
@@ -194,12 +201,21 @@ class API
 		
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
-		$this->apioutput['themes'] = $themes;
-		$this->apioutput['wp_version'] = $this->wp_version;
-		$this->output();
+		
+		if(isset($themes['result']['error'])){
+			$this->error = true;
+			$this->errormessage = $themes['result']['error'];
+		}else{
+			$this->apioutput['themes'] = $themes;
+		}
+		
+		if($inCall === false){
+			$this->output();
+		}
+		
 	}
 	
-	public function getAllPlugins()
+	public function getAllPlugins($inCall = false)
 	{
 	    $options = is_array($this->post['plugin_options']) ? $this->post['plugin_options'] : array();
 		
@@ -207,29 +223,68 @@ class API
 		
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
-		$this->apioutput['plugins'] = $plugins;
-		$this->apioutput['wp_version'] = $this->wp_version;
+		
+		if(isset($plugins['result']['error'])){
+			$this->error = true;
+			$this->errormessage = $plugins['result']['error'];
+		}else{
+			$this->apioutput['plugins'] = $plugins;
+		}
+		
+		if($inCall === false){
+			$this->output();
+		}
+	}
+	
+	public function edit_themes()
+	{
+		$themes_info = is_array($this->post['themes_info']) ? $this->post['themes_info'] : array();
+		
+		$return = $this->getstate->execute(array('themes' => array('type' => 'edit_themes', 'options' => $themes_info)));
+		
+		$this->apioutput['username'] = $this->post['username'];
+		$this->apioutput['siteurl'] = $this->siteurl;
+		
+		if(isset($return['result']['error'])){
+			$this->error = true;
+			$this->errormessage = $return['result']['error'];
+		}
+		
+		$this->apioutput['data'] = $return;
+		$this->output();
+	}
+	
+	public function edit_plugins()
+	{
+		$plugins_info = is_array($this->post['plugins_info']) ? $this->post['plugins_info'] : array();
+		
+		$return = $this->getstate->execute(array('plugins' => array('type' => 'edit_plugins', 'options' => $plugins_info)));
+		
+		$this->apioutput['username'] = $this->post['username'];
+		$this->apioutput['siteurl'] = $this->siteurl;
+		
+		if(isset($return['result']['error'])){
+			$this->error = true;
+			$this->errormessage = $return['result']['error'];
+		}
+		
+		$this->apioutput['data'] = $return;
 		$this->output();
 	}
 	
 	public function getAlldata()
 	{
+		$inCall = true;
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
-		$status = $this->context->isSsl();
-		$this->apioutput['ssl_status'] = $status;
+		$this->getSSLStatus($inCall);
 		
-		$genoptions = $this->getstate->getSiteInfo();
-		$this->apioutput['general_options'] = $genoptions;
+		$this->getGeneralOptions($inCall);
 		
-		$theme_options = is_array($this->post['theme_options']) ? $this->post['theme_options'] : array();
-		$themes = $this->getstate->execute(array('themes' => array('type' => 'themes', 'options' => $theme_options)));
-		$this->apioutput['themes'] = $themes;
+		$this->getAllThemes($inCall);
 		
-		$plugin_options = is_array($this->post['plugin_options']) ? $this->post['plugin_options'] : array();
-		$plugins = $this->getstate->execute(array('plugins' => array('type' => 'plugins', 'options' => $plugin_options)));
-		$this->apioutput['plugins'] = $plugins;
+		$this->getAllPlugins($inCall);
 		
 		$this->apioutput['wp_version'] = $this->wp_version;
 		

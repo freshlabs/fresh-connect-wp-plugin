@@ -41,45 +41,45 @@ register_activation_hook( __FILE__, 'fp_setup_plugin' );
 register_deactivation_hook( __FILE__, 'fp_disable_plugin' );
 
 function fp_setup_plugin(){
-    $current_key = get_option('fp_connection_keys', array());
-    update_option('fresh_connect_status', 1);
-    if(empty($current_key)){
-        $connection_key = fp_generate_uuid4();
-        update_option( 'fp_connection_keys', $connection_key );
-    }   
+	$current_key = get_option('fp_connection_keys', array());
+	update_option('fresh_connect_status', 1);
+	if(empty($current_key)){
+		$connection_key = fp_generate_uuid4();
+		update_option( 'fp_connection_keys', $connection_key );
+	}	
 }
 
 function fp_disable_plugin() {
-    update_option('fresh_connect_status', 0);
+	update_option('fresh_connect_status', 0);
 }
 
 // Hook for adding admin menus
 add_action('admin_menu', 'fc_fastpress_admin_menu_page');
 function fc_fastpress_admin_menu_page()
 {
-    add_menu_page( 
+	add_menu_page( 
         __( 'Fresh Connect', FRESH_TEXT_DOMAIN ),
         'Fresh Connect',
         'manage_options',
-        'fc-page',
+        'fresh-connect-dash',
         'fc_fastpress_custom_menu_page',
-        'dashicons-menu',
+		'dashicons-menu',
         4
     ); 
 }
 
 function fc_fastpress_custom_menu_page()
 {
-    include('page/main-page.php');
+	include('page/main-page.php');
 }
 
 function fc_fastpress_custom_links($links) {
 
-    $aboutus_link = admin_url().'admin.php?page=fc-page&fctab=fc_aboutus';
+    $aboutus_link = admin_url().'admin.php?page=fresh-connect-dash&fctab=fresh-connect-aboutus';
     $abt_link = '<a href="' . $aboutus_link . '">About Us</a>';
     array_unshift($links, $abt_link);
-    unset($links['deactivate']);
-    
+	unset($links['deactivate']);
+	
     return $links;
 } 
 
@@ -88,13 +88,14 @@ add_filter("plugin_action_links_$plugin", 'fc_fastpress_custom_links' );
 
 add_action('admin_notices', 'fc_fastpress_plugin_notice');
 function fc_fastpress_plugin_notice() {
-    global $pagenow;
-    
-    if ( $pagenow == 'plugins.php' ) {
-        $aboutus_link = admin_url().'admin.php?page=fc-page&fctab=fc_aboutus';
+	global $pagenow;
+	
+	if ( $pagenow == 'plugins.php' ) {
+		$aboutus_link = admin_url().'admin.php?page=fresh-connect-dash&fctab=fresh-connect-aboutus';
 
-        printf( '<div class="notice notice-warning is-dismissible"><p>Fresh Connect plugin shouldn\'t be removed or disabled. Please go to the <a href="%1$s">About Us</a> page for more info.</p></div>', esc_url( $aboutus_link ) );
-    }
+		printf( '<div class="notice notice-warning is-dismissible"><p>Fresh Connect plugin shouldn\'t be removed or disabled. Please go to the <a href="%1$s">About Us</a> page for more info.</p></div>', esc_url( $aboutus_link ) );
+	}
 }
 
 require_once('inc/AutoLogin.php');
+require_once('inc/updater.php');

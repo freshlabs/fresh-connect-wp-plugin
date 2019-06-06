@@ -87,5 +87,44 @@ class FastPress_Provider_Theme
 
         return array_values($themes);
     }
+	
+	public function edit_themes($args)
+    {
+		@include_once ABSPATH.'wp-admin/includes/file.php';
+		@include_once ABSPATH.'wp-admin/includes/theme.php';
+		extract($args);
+        $return = array();
+		if(empty($items)) {
+			$return['error'] = "Invalid arguments";
+		}else {
+			foreach ($items as $item) {
+				switch ($item['edit_action']) {
+					case 'activate':
+						switch_theme($item['path'], $item['stylesheet']);
+						break;
+					case 'delete':
+						$result = delete_theme($item['stylesheet']);
+						break;
+					default:
+						break;
+				}
+
+				if (is_wp_error($result)) {
+					$result = array(
+						'error' => $result->get_error_message(),
+					);
+				} elseif ($result === false) {
+					$result = array(
+						'error' => "Failed to perform action.",
+					);
+				} else {
+					$result = "OK";
+				}
+				$return[$item['name']] = $result;
+			}
+		}
+        
+        return $return;
+    }
 }
 

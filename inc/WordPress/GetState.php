@@ -18,8 +18,12 @@ class Fastpress_Action_GetState
     const SINGLE_SQL_RESULT = 'singleSqlResult';
 
     const PLUGINS = 'plugins';
+    
+    const EDIT_PLUGINS = 'edit_plugins';
 
     const THEMES = 'themes';
+	
+    const EDIT_THEMES = 'edit_themes';
 
     const PLUGIN_UPDATES = 'pluginUpdates';
 
@@ -73,8 +77,12 @@ class Fastpress_Action_GetState
                 return $this->getSingleSqlResult($options);
             case self::PLUGINS:
                 return $this->getPlugins($options);
+            case self::EDIT_PLUGINS:
+                return $this->editPlugins($options);
             case self::THEMES:
                 return $this->getThemes($options);
+			case self::EDIT_THEMES:
+                return $this->editThemes($options);
             case self::PLUGIN_UPDATES:
                 return $this->getPluginUpdates($options);
             case self::THEME_UPDATES:
@@ -88,7 +96,7 @@ class Fastpress_Action_GetState
             case self::SERVER_INFO:
                 return $this->getServerInfo($options);
             default:
-                return array('status' => 'error', 'msg' => 'Undefined field type provided: '.$type);
+                return array('error' => 'Undefined field type provided: '.$type);
         }
     }
 
@@ -170,6 +178,16 @@ class Fastpress_Action_GetState
 
         return $plugins;
     }
+    
+    protected function editPlugins(array $options = array())
+    {
+        require_once(FRESH_CONNECT_DIR_PATH .'inc/WordPress/Provider/Plugin.php');
+        
+        $pluginProvider    = new FastPress_Provider_Plugin($this->context);
+        $plugins           = $pluginProvider->edit_plugins($options);
+        
+        return $plugins;
+    }
 
     protected function getThemes(array $options = array())
     {
@@ -202,6 +220,16 @@ class Fastpress_Action_GetState
 
         return $themes;
     }
+	
+	protected function editThemes(array $options = array())
+	{
+		require_once(FRESH_CONNECT_DIR_PATH .'inc/WordPress/Provider/Theme.php');
+		
+		$themeProvider     = new FastPress_Provider_Theme($this->context);
+        $return            = $themeProvider->edit_themes($options);
+		
+		return $return;
+	}
 
     public function getPluginUpdates(array $options = array())
     {
