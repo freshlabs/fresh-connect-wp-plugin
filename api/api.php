@@ -270,7 +270,76 @@ class API
 		
 		$this->apioutput['data'] = $return;
 		$this->output();
-	}
+    }
+    
+    public function getSiteHealth()
+    {
+        $this->apioutput['site_health'] = array();
+        if( file_exists( ABSPATH . 'wp-admin/includes/class-wp-site-health.php' ) )
+        {
+            @require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+            @require_once( ABSPATH . 'wp-admin/includes/update.php' );
+            @require_once( ABSPATH . 'wp-admin/includes/misc.php' );
+            @require_once( ABSPATH . 'wp-admin/includes/file.php' );
+            if ( ! class_exists( 'WP_Site_Health' ) ) {
+                @require_once( ABSPATH . 'wp-admin/includes/class-wp-site-health.php' );
+            }
+
+            $site_health = new WP_Site_Health();
+
+            $health_check = array('wordpress_version', 'plugin_version', 'theme_version', 'php_version', 'php_extensions', 'sql_server', 'utf8mb4_support', 'dotorg_communication', 'is_in_debug_mode', 'https_status', 'ssl_support', 'scheduled_events', 'loopback_requests', 'http_requests');
+            $result = array();
+
+            $goodTests = $recommendedTests = $criticalTests = 0;
+            if(!empty($health_check))
+            {
+                foreach ($health_check as $fun) {
+                    $function = 'get_test_'.$fun;
+                    # Check if the method requested exists
+                    if (method_exists($site_health,$function))
+                    {
+                        $result = $site_health->{$function}();
+                        if(isset($result['description'])){
+                            $result['description'] = strip_tags($result['description']);
+                        }
+                        if(isset($result['actions'])){
+                            $result['actions'] = strip_tags($result['actions']);
+                        }
+                        
+                        if($result['status'] == 'good')
+                        {
+                            $goodTests = $goodTests + 1;
+                        }
+
+                        if($result['status'] == 'recommended')
+                        {
+                            $recommendedTests = $recommendedTests + 1;
+                        }
+
+                        if($result['status'] == 'critical')
+                        {
+                            $criticalTests = $criticalTests + 1;
+                        }
+    
+                        $this->apioutput['site_health'][$fun] = $result;
+                    }
+                }
+                $criticalTests = $criticalTests * 1.5;
+                $totalTests = $goodTests + $recommendedTests + $criticalTests;
+                $failedTests = $recommendedTests + $criticalTests;
+                $val = 100 - ceil( ( $failedTests / $totalTests ) * 100 );
+                if ( 0 > $val ) {
+                    $val = 0;
+                }
+                if ( 100 < $val ) {
+                    $val = 100;
+                }
+
+                $this->apioutput['site_health']['progress_count'] = $val;
+            }
+        }
+        $this->output();
+    }
 	
 	public function getAlldata()
 	{
