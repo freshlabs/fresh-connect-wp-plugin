@@ -236,7 +236,7 @@ class API
 		}
 	}
 	
-	public function edit_themes()
+	public function editThemes()
 	{
 		$themes_info = is_array($this->post['themes_info']) ? $this->post['themes_info'] : array();
 		
@@ -254,7 +254,7 @@ class API
 		$this->output();
 	}
 	
-	public function edit_plugins()
+	public function editPlugins()
 	{
 		$plugins_info = is_array($this->post['plugins_info']) ? $this->post['plugins_info'] : array();
 		
@@ -341,7 +341,7 @@ class API
         $this->output();
     }
 	
-	public function getAlldata()
+	public function getAllData()
 	{
 		$inCall = true;
 		$this->apioutput['username'] = $this->post['username'];
