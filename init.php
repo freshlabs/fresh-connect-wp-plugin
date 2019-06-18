@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name:       Fresh Connect
- * Plugin URI:        https://freshlabs.link/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Plugin URI:        https://freshlabs.link/freshconnect
+ * Description:       The Fresh Connect plugin connects your blog with the FastPress cloud hosting platform, allowing 1 click logins and powerful statistics. Please see the about page for more information.
  * Version:           1.0.0
- * Author:            Fastpress
- * Author URI:        https://freshlabs.link/
+ * Author:            Fresh Labs
+ * Author URI:        https://freshlabs.link/freshlabs
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  */
