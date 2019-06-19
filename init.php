@@ -15,6 +15,7 @@ define( 'FRESH_TEXT_DOMAIN', 'fresh-connect' );
 define( 'FRESH_CONNECT_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FRESH_CONNECT_URL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'FRESH_CONNECT_PLUGIN_NAME', 'Fresh Connect' );
+define( 'FRESH_CONNECT_PLUGIN_URL', 'https://freshlabs.link/' );
 define( 'FRESH_CONNECT_PLUGIN_FILE_PATH', plugin_basename( __FILE__ ) );
 $plugin = plugin_basename( __FILE__ );
 

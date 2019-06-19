@@ -25,7 +25,7 @@ function fc_fastpress_plugin_checkforupdate($check_now=false){
         $expiry_date = $timestamp + 86400;
         $license_expired = $timestamp > $expiry_date;
 
-        # if item_name has been set (via licensing call - fdev_check_license() ) then look for updates
+        # if item_name has been set then look for updates
         if (($item_name AND $license_expired) OR $check_now){
 			
 			$url = base64_decode( $remote_file );
