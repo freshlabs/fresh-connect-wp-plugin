@@ -18,7 +18,7 @@ function fc_fastpress_plugin_checkforupdate($check_now=false){
         
         # Get the license key
         $license_key = get_option('fp_connection_keys');
-        $remote_file = get_option('fresh_connect_remote_url');
+		$remote_file = get_option('fresh_connect_remote_url');
         $item_name = FRESH_CONNECT_PLUGIN_NAME;
         $timestamp = get_option('fc_fastpress_plugin_update_last_checked');
 
@@ -27,9 +27,9 @@ function fc_fastpress_plugin_checkforupdate($check_now=false){
 
         # if item_name has been set (via licensing call - fdev_check_license() ) then look for updates
         if (($item_name AND $license_expired) OR $check_now){
-            
-            $url = base64_decode( $remote_file );
-
+			
+			$url = base64_decode( $remote_file );
+			
             $edd_updater = new FC_Plugin_Updater( $url, FRESH_CONNECT_PLUGIN_FILE_PATH, array(
                     'version' 	=> FRESH_CONNECT_VERSION, 		// current version number
                     'license' 	=> $license_key, 	            // license key (used get_option above to retrieve from DB)

@@ -43,16 +43,22 @@ register_deactivation_hook( __FILE__, 'fp_disable_plugin' );
 function fp_setup_plugin(){
 	$current_key = get_option('fp_connection_keys', array());
 	update_option('fresh_connect_status', 1);
-    update_option('fresh_connect_remote_url', 'aHR0cDovL2ZyZXNoc3RvcmUuc3BhY2UvdGVzdC91cGRhdGUucGhw');
+	update_option('fresh_connect_remote_url', 'aHR0cDovL2ZyZXNoc3RvcmUuc3BhY2UvdGVzdC91cGRhdGUucGhw');
 	if(empty($current_key)){
 		$connection_key = fp_generate_uuid4();
 		update_option( 'fp_connection_keys', $connection_key );
-	}	
+	}
 }
 
 function fp_disable_plugin() {
 	update_option('fresh_connect_status', 0);
 }
+
+function fp_admin_enqueue_scripts() {
+	wp_enqueue_style( 'fp-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/fp-admin.css', array(), '1.0', 'all' );
+	wp_enqueue_script('fp-deactivation-js', FRESH_CONNECT_URL_PATH . 'assets/js/fp-admin.js', array(), '1.0', false );
+}
+add_action('admin_enqueue_scripts', 'fp_admin_enqueue_scripts');
 
 // Hook for adding admin menus
 add_action('admin_menu', 'fc_fastpress_admin_menu_page');
@@ -74,29 +80,36 @@ function fc_fastpress_custom_menu_page()
 	include('page/main-page.php');
 }
 
+add_action('admin_footer', 'fp_deactivation_warning_dialog_box');
+function fp_deactivation_warning_dialog_box()
+{
+	require('page/templates/display_deactivation_popup.php');
+}
+
 function fc_fastpress_custom_links($links) {
 
     $aboutus_link = admin_url().'admin.php?page=fresh-connect-dash&fctab=fresh-connect-aboutus';
     $abt_link = '<a href="' . $aboutus_link . '">About Us</a>';
     array_unshift($links, $abt_link);
-	unset($links['deactivate']);
+	//unset($links['deactivate']);
+	
+	$deactivate_url =
+	add_query_arg(
+		array(
+			'action' => 'deactivate',
+			'plugin' => FRESH_CONNECT_PLUGIN_FILE_PATH,
+			'_wpnonce' => wp_create_nonce( 'deactivate-plugin_' . FRESH_CONNECT_PLUGIN_FILE_PATH )
+		),
+		admin_url( 'plugins.php' )
+	);
+
+	$links["deactivate"] = '<a href="'.$deactivate_url.'" class="fc_deactivate_link">Deactivate</a>';
 	
     return $links;
 } 
 
 # Adds custom link to Plugins Activation Page
 add_filter("plugin_action_links_$plugin", 'fc_fastpress_custom_links' );
-
-add_action('admin_notices', 'fc_fastpress_plugin_notice');
-function fc_fastpress_plugin_notice() {
-	global $pagenow;
-	
-	if ( $pagenow == 'plugins.php' ) {
-		$aboutus_link = admin_url().'admin.php?page=fresh-connect-dash&fctab=fresh-connect-aboutus';
-
-		printf( '<div class="notice notice-warning is-dismissible"><p>Fresh Connect plugin shouldn\'t be removed or disabled. Please go to the <a href="%1$s">About Us</a> page for more info.</p></div>', esc_url( $aboutus_link ) );
-	}
-}
 
 require_once('inc/AutoLogin.php');
 require_once('inc/updater.php');
