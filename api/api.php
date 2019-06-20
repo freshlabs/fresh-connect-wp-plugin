@@ -64,7 +64,7 @@ class API
 		$username = empty($this->post['username']) ? null : $this->post['username'];
 		
 		if ( ! username_exists( $username ) ){
-			$users = getUsers(array('role' => 'administrator', 'number' => 1, 'orderby' => 'ID'));
+			$users = get_users(array('role' => 'administrator', 'number' => 1, 'orderby' => 'ID'));
 			
             if (empty($users[0]->user_login)) {
                 $this->error = true;
@@ -340,6 +340,35 @@ class API
         }
         $this->output();
     }
+	
+	public function updateURLs()
+	{
+		if(empty($this->post['oldurl'])){
+			$this->error = true;
+			$this->errormessage = 'Old url is missing.';
+			$this->output();
+		}
+		
+		if(empty($this->post['newurl'])){
+			$this->error = true;
+			$this->errormessage = 'New url is missing.';
+			$this->output();
+		}
+		
+		if(function_exists('esc_attr')){
+			$oldurl = esc_attr(trim($this->post['oldurl']));
+			$newurl = esc_attr(trim($this->post['newurl']));
+		}else{
+			$oldurl = trim($this->post['oldurl']);
+			$newurl = trim($this->post['newurl']);
+		}
+		
+		$result = $this->context->update_urls($oldurl, $newurl);
+
+		$this->apioutput['username'] = $this->post['username'];
+		$this->apioutput['result'] = $result;
+		$this->output();
+	}
 	
 	public function getAllData()
 	{

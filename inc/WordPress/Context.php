@@ -144,15 +144,15 @@ class FastPress_Context
             update_option($optionName, $optionValue, true);
         }
     }
-	
-	public function setMultipleOptions($options)
-	{
-		if(!empty($options)){
-			foreach($options as $key => $value){
-				update_option($key, $value);
-			}
-		}
-	}
+    
+    public function setMultipleOptions($options)
+    {
+        if(!empty($options)){
+            foreach($options as $key => $value){
+                update_option($key, $value);
+            }
+        }
+    }
 
     /**
      * @param string $option Name of option to retrieve.
@@ -636,8 +636,8 @@ class FastPress_Context
     {
         return get_bloginfo('description');
     }
-	
-	public function getAdminEmail()
+    
+    public function getAdminEmail()
     {
         return get_option('admin_email');
     }
@@ -718,20 +718,20 @@ class FastPress_Context
     {
         return (bool)is_ssl();
     }
-	
-	public function setSSL($value)
-	{
-		$url = site_url();
-		if($value){
-			$url = str_replace('http://', 'https://', $url);
-			update_option('siteurl', $url);
-			update_option('home', $url);
-		}else{
-			$url = str_replace('https://', 'http://', $url);
-			update_option('siteurl', $url);
-			update_option('home', $url);
-		}
-	}
+    
+    public function setSSL($value)
+    {
+        $url = site_url();
+        if($value){
+            $url = str_replace('http://', 'https://', $url);
+            update_option('siteurl', $url);
+            update_option('home', $url);
+        }else{
+            $url = str_replace('https://', 'http://', $url);
+            update_option('siteurl', $url);
+            update_option('home', $url);
+        }
+    }
 
     /**
      * @return bool
@@ -820,5 +820,83 @@ class FastPress_Context
     public function seemsUtf8($str)
     {
         return seems_utf8($str);
+    }
+    
+    public function unserialize_replace( $from = '', $to = '', $data = '', $serialised = false ) {
+        try {
+            if ( false !== is_serialized( $data ) ) {
+                $unserialized = unserialize( $data );
+                $data = $this->unserialize_replace( $from, $to, $unserialized, true );
+            }
+            elseif ( is_array( $data ) ) {
+                $_tmp = array( );
+                foreach ( $data as $key => $value ) {
+                    $_tmp[ $key ] = $this->unserialize_replace( $from, $to, $value, false );
+                }
+                $data = $_tmp;
+                unset( $_tmp );
+            }
+            else {
+                if ( is_string( $data ) )
+                    $data = str_replace( $from, $to, $data );
+            }
+            if ( $serialised )
+                return serialize( $data );
+        } catch( Exception $error ) {
+        }
+        return $data;
+    }
+    
+    public function update_urls($oldurl,$newurl){
+        $db      = $this->getDb();
+        
+        $options = array('content', 'excerpts', 'links', 'attachments', 'custom');
+        $results = array();
+        
+        $queries = array(
+        'content' =>        array("UPDATE $db->posts SET post_content = replace(post_content, %s, %s)",  __('Content Items (Posts, Pages, Custom Post Types, Revisions)', FRESH_TEXT_DOMAIN) ),
+        'excerpts' =>       array("UPDATE $db->posts SET post_excerpt = replace(post_excerpt, %s, %s)", __('Excerpts', FRESH_TEXT_DOMAIN) ),
+        'attachments' =>    array("UPDATE $db->posts SET guid = replace(guid, %s, %s) WHERE post_type = 'attachment'",  __('Attachments', FRESH_TEXT_DOMAIN) ),
+        'links' =>          array("UPDATE $db->links SET link_url = replace(link_url, %s, %s)", __('Links', FRESH_TEXT_DOMAIN) ),
+        'custom' =>         array("UPDATE $db->postmeta SET meta_value = replace(meta_value, %s, %s)",  __('Custom Fields', FRESH_TEXT_DOMAIN) ),
+        'guids' =>          array("UPDATE $db->posts SET guid = replace(guid, %s, %s)",  __('GUIDs', FRESH_TEXT_DOMAIN) )
+        );
+        
+        foreach($options as $option){
+            if( $option == 'custom' ){
+                    $n = 0;
+                    $row_count = $db->get_var( "SELECT COUNT(*) FROM $db->postmeta" );
+                    $page_size = 10000;
+                    $pages = ceil( $row_count / $page_size );
+                
+                    for( $page = 0; $page < $pages; $page++ ) {
+                        $current_row = 0;
+                        $start = $page * $page_size;
+                        $end = $start + $page_size;
+                        $pmquery = "SELECT * FROM $db->postmeta WHERE meta_value <> ''";
+                        $items = $db->get_results( $pmquery );
+                        foreach( $items as $item ){
+                        $value = $item->meta_value;
+                        if( trim($value) == '' )
+                            continue;
+                        
+                            $edited = $this->unserialize_replace( $oldurl, $newurl, $value );
+                        
+                            if( $edited != $value ){
+                                $fix = $db->query("UPDATE $db->postmeta SET meta_value = '".$edited."' WHERE meta_id = ".$item->meta_id );
+                                if( $fix )
+                                    $n++;
+                            }
+                        }
+                    }
+                    $results[$option] = array($n, $queries[$option][1]);
+            }
+            else
+            {
+                $result = $db->query( $db->prepare( $queries[$option][0], $oldurl, $newurl) );
+                $results[$option] = array($result, $queries[$option][1]);
+            }
+        }
+        return $results;            
     }
 }
