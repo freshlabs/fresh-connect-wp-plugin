@@ -33,7 +33,7 @@
 		event.preventDefault();
 		var urlRedirect = jQuery( this ).attr('href');
 		jQuery(".fc-deactivate-popup-header").addClass("show_pop");
-		jQuery(".fc-deactivate-action").attr('href', urlRedirect);
+		/*jQuery(".fc-deactivate-action").attr('href', urlRedirect);*/
 	});
 	
 	jQuery( document ).on('click', '.fc-close-popup', function(){

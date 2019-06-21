@@ -111,6 +111,19 @@ function fc_fastpress_custom_links($links) {
 
 # Adds custom link to Plugins Activation Page
 add_filter("plugin_action_links_$plugin", 'fc_fastpress_custom_links' );
+ 
+function fc_fastpress_support_links( $links_array, $plugin_file_name, $plugin_data, $status ) {
+    
+    $support = FRESH_CONNECT_PLUGIN_URL . 'support';
+	if( strpos( $plugin_file_name, basename(__FILE__) ) ) {
+		// you can still use array_unshift() to add links at the beginning
+		$links_array[] = '<a href="' . $support . '" target="_blank">Support</a>';
+	}
+ 
+	return $links_array;
+}
+
+add_filter( 'plugin_row_meta', 'fc_fastpress_support_links', 10, 4 );
 
 require_once('inc/AutoLogin.php');
 require_once('inc/updater.php');
