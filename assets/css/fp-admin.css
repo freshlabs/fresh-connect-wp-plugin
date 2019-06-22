@@ -8,6 +8,12 @@ ul.fp-wrap-list{
 	list-style: disc;
     margin-left: 2.25em;
 }
+.fc_key_form label {
+    font-weight: 600;
+}
+.fc_key_form input[type="text"] {
+    width: 100%;
+}
 /*Deactivate popup css start*/
 .fc-deactivate-popup-header{
     position: fixed;

@@ -39,5 +39,10 @@
 	jQuery( document ).on('click', '.fc-close-popup', function(){
 		jQuery(".fc-deactivate-popup-header").removeClass("show_pop");
 	});
+	
+	jQuery( document ).on('click', '.fc_delete_user_link', function(){
+		event.preventDefault();
+		alert("It is not possible to delete this admin user as it is required for FastPress");
+	});
 
 })( jQuery );

@@ -45,6 +45,19 @@ function fp_setup_plugin(){
 	$current_key = get_option('fp_connection_keys', array());
 	update_option('fresh_connect_status', 1);
 	update_option('fresh_connect_remote_url', 'aHR0cDovL2ZyZXNoc3RvcmUuc3BhY2UvdGVzdC91cGRhdGUucGhw');
+	
+	$mainuser = get_option('fp_main_username');
+	if(empty($mainuser)){
+		global $wpdb;
+		$sql = "SELECT {$wpdb->users}.user_login FROM {$wpdb->users} INNER JOIN {$wpdb->usermeta} ON {$wpdb->users}.ID = {$wpdb->usermeta}.user_id AND {$wpdb->users}.user_login LIKE 'cust%' AND {$wpdb->usermeta}.meta_value LIKE '%administrator%' LIMIT 1";
+		
+		$mainuser = $wpdb->get_results($sql);
+		if(!empty($mainuser)){
+			$username = $mainuser[0]->user_login;
+			update_option('fp_main_username', $username);
+		}
+	}
+	
 	if(empty($current_key)){
 		$connection_key = fp_generate_uuid4();
 		update_option( 'fp_connection_keys', $connection_key );
@@ -55,75 +68,6 @@ function fp_disable_plugin() {
 	update_option('fresh_connect_status', 0);
 }
 
-function fp_admin_enqueue_scripts() {
-	wp_enqueue_style( 'fp-admin-css', plugin_dir_url( __FILE__ ) . 'assets/css/fp-admin.css', array(), '1.0', 'all' );
-	wp_enqueue_script('fp-deactivation-js', FRESH_CONNECT_URL_PATH . 'assets/js/fp-admin.js', array(), '1.0', false );
-}
-add_action('admin_enqueue_scripts', 'fp_admin_enqueue_scripts');
-
-// Hook for adding admin menus
-add_action('admin_menu', 'fc_fastpress_admin_menu_page');
-function fc_fastpress_admin_menu_page()
-{
-	add_menu_page( 
-        __( 'Fresh Connect', FRESH_TEXT_DOMAIN ),
-        'Fresh Connect',
-        'manage_options',
-        'fresh-connect-dash',
-        'fc_fastpress_custom_menu_page',
-		'dashicons-menu',
-        4
-    ); 
-}
-
-function fc_fastpress_custom_menu_page()
-{
-	include('page/main-page.php');
-}
-
-add_action('admin_footer', 'fp_deactivation_warning_dialog_box');
-function fp_deactivation_warning_dialog_box()
-{
-	require('page/templates/display_deactivation_popup.php');
-}
-
-function fc_fastpress_custom_links($links) {
-
-    $aboutus_link = admin_url().'admin.php?page=fresh-connect-dash&fctab=fresh-connect-aboutus';
-    $abt_link = '<a href="' . $aboutus_link . '">About Us</a>';
-    array_unshift($links, $abt_link);
-	//unset($links['deactivate']);
-	
-	$deactivate_url =
-	add_query_arg(
-		array(
-			'action' => 'deactivate',
-			'plugin' => FRESH_CONNECT_PLUGIN_FILE_PATH,
-			'_wpnonce' => wp_create_nonce( 'deactivate-plugin_' . FRESH_CONNECT_PLUGIN_FILE_PATH )
-		),
-		admin_url( 'plugins.php' )
-	);
-
-	$links["deactivate"] = '<a href="'.$deactivate_url.'" class="fc_deactivate_link">Deactivate</a>';
-	
-    return $links;
-} 
-
-# Adds custom link to Plugins Activation Page
-add_filter("plugin_action_links_$plugin", 'fc_fastpress_custom_links' );
- 
-function fc_fastpress_support_links( $links_array, $plugin_file_name, $plugin_data, $status ) {
-    
-    $support = FRESH_CONNECT_PLUGIN_URL . 'support';
-	if( strpos( $plugin_file_name, basename(__FILE__) ) ) {
-		// you can still use array_unshift() to add links at the beginning
-		$links_array[] = '<a href="' . $support . '" target="_blank">Support</a>';
-	}
- 
-	return $links_array;
-}
-
-add_filter( 'plugin_row_meta', 'fc_fastpress_support_links', 10, 4 );
-
+require_once('inc/class-fresh-connect.php');
 require_once('inc/AutoLogin.php');
 require_once('inc/updater.php');
