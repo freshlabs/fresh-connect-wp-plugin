@@ -23,44 +23,26 @@ class API
 		$this->con_key = $con_key;
 		$this->siteurl = site_url();
 		$this->wp_version = $context->getVersion();
-		$this->initialize();
     }
 	
-	public function initialize()
+	public function initialize($parameters)
 	{
-		if (!isset($_POST) || empty($_POST))
+		if (!isset($parameters) || empty($parameters))
         {
             $this->error = true;
             $this->errormessage = 'No POST data provided';
-            $this->output();
+            return $this->output();
         }
 		
 		if(!$this->fp_status)
 		{
 			$this->error = true;
             $this->errormessage = 'It seems Fresh Connect plugin is not activated on wp site. Please activate it.';
-            $this->output();
+            return $this->output();
 		}
 		
-		$this->post = $_POST;
+		$this->post = $parameters;
 		
-		$this->validate();
-		
-		# Check if the method requested exists, and pass on to that
-        if (method_exists($this,$this->post['request_method']))
-        {
-            $this->{$this->post['request_method']}();
-        }
-        else
-        {
-            $this->error = true;
-            $this->errormessage = 'No api method found.';
-            $this->output();
-        }
-	}
-	
-	private function validate()
-    {
 		$username = empty($this->post['username']) ? null : $this->post['username'];
 		
 		if ( ! username_exists( $username ) ){
@@ -69,7 +51,7 @@ class API
             if (empty($users[0]->user_login)) {
                 $this->error = true;
 				$this->errormessage = 'We could not find an administrator user to use. Please contact support.';
-				$this->output();
+				return $this->output();
             }
 			
             $this->post['username'] = $users[0]->user_login;
@@ -80,7 +62,7 @@ class API
 		if(!in_array('administrator', $userdata->roles)){
 			$this->error = true;
 			$this->errormessage = "User {$this->post['username']} have not required permission to access the data.";
-			$this->output();
+			return $this->output();
 		}
 		
 		$this->userdata = $userdata;
@@ -91,11 +73,22 @@ class API
         {
             $this->error = true;
             $this->errormessage = 'Invalid hash - Authentication faild, please check connection key is correct.';
-            $this->output();
+            return $this->output();
         }
-        
-		return true;
-    }
+		
+		# Check if the method requested exists, and pass on to that
+        if (method_exists($this,$this->post['request_method']))
+        {
+            $data = $this->{$this->post['request_method']}();
+			return $data;
+        }
+        else
+        {
+            $this->error = true;
+            $this->errormessage = 'No api method found.';
+            return $this->output();
+        }
+	}
 	
 	private function output()
 	{
@@ -109,9 +102,8 @@ class API
             $this->apioutput['status'] = 'success';
         }
 
-        echo json_encode($this->apioutput);
-		//echo $this->apioutput;
-        exit();
+        //echo json_encode($this->apioutput);
+		return $this->apioutput;
 	}
 	
 	function getSSLStatus($inCall = false)
@@ -123,7 +115,7 @@ class API
 		$this->apioutput['ssl_status'] = $status;
 		
 		if($inCall === false){
-			$this->output();
+			return $this->output();
 		}
 	}
 	
@@ -137,7 +129,7 @@ class API
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
 		
-		$this->output();
+		return $this->output();
 	}
 	
 	function getWPVersion()
@@ -146,7 +138,7 @@ class API
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
 		
-		$this->output();
+		return $this->output();
 	}
 	
 	function getOption()
@@ -159,7 +151,7 @@ class API
 		$this->apioutput['option_key'] = $option;
 		$this->apioutput['option_value'] = $value;
 		
-		$this->output();
+		return $this->output();
 	}
 	
 	function getGeneralOptions($inCall = false)
@@ -177,7 +169,7 @@ class API
 		$this->apioutput['general_options'] = $data;
 		
 		if($inCall === false){
-			$this->output();
+			return $this->output();
 		}
 	}
 	
@@ -190,7 +182,7 @@ class API
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
-		$this->output();
+		return $this->output();
 	}
 	
 	public function getAllThemes($inCall = false)
@@ -210,7 +202,7 @@ class API
 		}
 		
 		if($inCall === false){
-			$this->output();
+			return $this->output();
 		}
 		
 	}
@@ -232,7 +224,7 @@ class API
 		}
 		
 		if($inCall === false){
-			$this->output();
+			return $this->output();
 		}
 	}
 	
@@ -251,7 +243,7 @@ class API
 		}
 		
 		$this->apioutput['data'] = $return;
-		$this->output();
+		return $this->output();
 	}
 	
 	public function editPlugins()
@@ -269,7 +261,7 @@ class API
 		}
 		
 		$this->apioutput['data'] = $return;
-		$this->output();
+		return $this->output();
     }
     
     public function getSiteHealth()
@@ -338,7 +330,7 @@ class API
                 $this->apioutput['site_health']['progress_count'] = $val;
             }
         }
-        $this->output();
+        return $this->output();
     }
 	
 	public function updateURLs()
@@ -346,13 +338,13 @@ class API
 		if(empty($this->post['oldurl'])){
 			$this->error = true;
 			$this->errormessage = 'Old url is missing.';
-			$this->output();
+			return $this->output();
 		}
 		
 		if(empty($this->post['newurl'])){
 			$this->error = true;
 			$this->errormessage = 'New url is missing.';
-			$this->output();
+			return $this->output();
 		}
 		
 		if(function_exists('esc_attr')){
@@ -367,7 +359,7 @@ class API
 
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['result'] = $result;
-		$this->output();
+		return $this->output();
 	}
 	
 	public function getAllData()
@@ -386,6 +378,6 @@ class API
 		
 		$this->apioutput['wp_version'] = $this->wp_version;
 		
-		$this->output();
+		return $this->output();
 	}
 }

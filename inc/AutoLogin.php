@@ -248,10 +248,9 @@ class FS_Autologin
         $this->sessionStore->add($this->context->getCurrentUser()->ID, $token);
     }
 }
-require_once('WordPress/Context.php');
-require_once('WordPress/SessionStore.php');	
+
 $context = new FastPress_Context();
 $sessionstore = new FastPress_SessionStore($context);
-$request = new FS_Autologin($context, $sessionstore);
-$request->checkLoginToken();
+$authrequest = new FS_Autologin($context, $sessionstore);
+$authrequest->checkLoginToken();
 ?>

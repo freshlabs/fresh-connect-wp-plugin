@@ -17,7 +17,6 @@ define( 'FRESH_CONNECT_URL_PATH', plugin_dir_url( __FILE__ ) );
 define( 'FRESH_CONNECT_PLUGIN_NAME', 'Fresh Connect' );
 define( 'FRESH_CONNECT_PLUGIN_URL', 'https://freshlabs.link/' );
 define( 'FRESH_CONNECT_PLUGIN_FILE_PATH', plugin_basename( __FILE__ ) );
-$plugin = plugin_basename( __FILE__ );
 
 function fp_generate_uuid4()
 {
@@ -68,6 +67,26 @@ function fp_disable_plugin() {
 	update_option('fresh_connect_status', 0);
 }
 
-require_once('inc/class-fresh-connect.php');
-require_once('inc/AutoLogin.php');
-require_once('inc/updater.php');
+require_once( FRESH_CONNECT_DIR_PATH . 'inc/loader.php' );
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'fresh-connect', '/v1', array(
+		'methods' => 'POST',
+		'callback' => 'fp_api_callback'
+	) );
+} );
+
+function fp_api_callback( $request ) {
+	
+	$parameters = $request->get_params();
+	
+	$fp_status = get_option('fresh_connect_status');
+	$con_key = get_option('fp_connection_keys');
+	
+	$context = new FastPress_Context();
+	$getstate = new Fastpress_Action_GetState($context);
+	$api = new API($context, $getstate, $fp_status, $con_key);
+	$data = $api->initialize( $parameters );
+	
+	return $data;
+}

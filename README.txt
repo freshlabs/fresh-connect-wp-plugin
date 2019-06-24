@@ -1,7 +1,7 @@
 === Fresh Connect by Fresh Labs ===
-Contributors: Fresh Labs
+Contributors: careybaird
 Tags: fresh connect, about us, basic details
-Requires at least: 3.0.1
+Requires at least: 4.6
 Tested up to: 5.2.2
 Stable tag: 1.0
 License: GPLv2 or later
@@ -44,9 +44,6 @@ After downloading the ZIP file of the Fresh Connect plugin,
 * We have a standalone “Fresh Forum” where you can ask questions, share your websites privately for feedback, search the history of questions and more: <a href="https://freshlabs.link/forum">Join the Fresh Forum</a>
 
 * Our friendly support team have years of experience with WordPress and are always on hand to help you out: <a href="http://freshlabs.link/support">Contact the Fresh Support Team</a>
-
-
-== Screenshots ==
 
 
 == Changelog ==
