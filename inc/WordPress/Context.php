@@ -9,6 +9,10 @@ class FastPress_Context
     private $context;
 
     private $constants;
+    
+    private $results;
+    
+    private $columns;
 
     public function __construct(array &$globals = null, array $constants = null)
     {
@@ -821,6 +825,14 @@ class FastPress_Context
     {
         return seems_utf8($str);
     }
+	
+	public function strpos_arr($haystack, $needle) {
+		if(!is_array($needle)) $needle = array($needle);
+		foreach($needle as $what) {
+			if((0 === strpos($haystack, $what))!==false) return 1;
+		}
+		return false;
+	}
     
     public function unserialize_replace( $from = '', $to = '', $data = '', $serialised = false ) {
         try {
@@ -848,55 +860,174 @@ class FastPress_Context
     }
     
     public function update_urls($oldurl,$newurl){
-        $db      = $this->getDb();
+        $db = $this->getDb();
         
-        $options = array('content', 'excerpts', 'links', 'attachments', 'custom');
-        $results = array();
+        $options = array('content', 'excerpts', 'links', 'attachments', 'custom' => array('commentmeta', 'postmeta', 'termmeta', 'usermeta', 'options'), 'comments', 'term_taxonomy');
+        
+        $core_tables = array('commentmeta', 'comments', 'links', 'options', 'postmeta', 'posts', 'term_relationships', 'term_taxonomy', 'termmeta', 'terms', 'usermeta', 'users');
+
+        $this->results = array();
+		
+		$prefix = $db->prefix;
+		$tables_mysql = $db->get_results('SHOW TABLES', ARRAY_N);
+		
+		if (!$tables_mysql) {
+			return array( 'result' => array('error' => 'Could not get list of tables') );
+		}
         
         $queries = array(
-        'content' =>        array("UPDATE $db->posts SET post_content = replace(post_content, %s, %s)",  __('Content Items (Posts, Pages, Custom Post Types, Revisions)', FRESH_TEXT_DOMAIN) ),
-        'excerpts' =>       array("UPDATE $db->posts SET post_excerpt = replace(post_excerpt, %s, %s)", __('Excerpts', FRESH_TEXT_DOMAIN) ),
-        'attachments' =>    array("UPDATE $db->posts SET guid = replace(guid, %s, %s) WHERE post_type = 'attachment'",  __('Attachments', FRESH_TEXT_DOMAIN) ),
-        'links' =>          array("UPDATE $db->links SET link_url = replace(link_url, %s, %s)", __('Links', FRESH_TEXT_DOMAIN) ),
-        'custom' =>         array("UPDATE $db->postmeta SET meta_value = replace(meta_value, %s, %s)",  __('Custom Fields', FRESH_TEXT_DOMAIN) ),
-        'guids' =>          array("UPDATE $db->posts SET guid = replace(guid, %s, %s)",  __('GUIDs', FRESH_TEXT_DOMAIN) )
+            'content' =>        array("UPDATE $db->posts SET post_content = replace(post_content, %s, %s)",  __('Content Items (Posts, Pages, Custom Post Types, Revisions)', FRESH_TEXT_DOMAIN) ),
+            'excerpts' =>       array("UPDATE $db->posts SET post_excerpt = replace(post_excerpt, %s, %s)", __('Excerpts', FRESH_TEXT_DOMAIN) ),
+            'attachments' =>    array("UPDATE $db->posts SET guid = replace(guid, %s, %s) WHERE post_type = 'attachment'",  __('Attachments', FRESH_TEXT_DOMAIN) ),
+            'links' =>          array("UPDATE $db->links SET link_url = replace(link_url, %s, %s)", __('Links', FRESH_TEXT_DOMAIN) ),
+            'custom' =>         array("UPDATE $db->postmeta SET meta_value = replace(meta_value, %s, %s)",  __('Custom Fields', FRESH_TEXT_DOMAIN) ),
+            'comments' =>        array("UPDATE $db->comments SET comment_content = replace(comment_content, %s, %s)",  __('Comments', FRESH_TEXT_DOMAIN) ),
+            'term_taxonomy' =>        array("UPDATE $db->term_taxonomy SET description = replace(description, %s, %s)",  __('Taxonomy', FRESH_TEXT_DOMAIN) ),
+            'guids' =>          array("UPDATE $db->posts SET guid = replace(guid, %s, %s)",  __('GUIDs', FRESH_TEXT_DOMAIN) )
         );
         
         foreach($options as $option){
-            if( $option == 'custom' ){
-                    $n = 0;
-                    $row_count = $db->get_var( "SELECT COUNT(*) FROM $db->postmeta" );
-                    $page_size = 10000;
-                    $pages = ceil( $row_count / $page_size );
-                
-                    for( $page = 0; $page < $pages; $page++ ) {
-                        $current_row = 0;
-                        $start = $page * $page_size;
-                        $end = $start + $page_size;
-                        $pmquery = "SELECT * FROM $db->postmeta WHERE meta_value <> ''";
-                        $items = $db->get_results( $pmquery );
-                        foreach( $items as $item ){
-                        $value = $item->meta_value;
-                        if( trim($value) == '' )
-                            continue;
-                        
-                            $edited = $this->unserialize_replace( $oldurl, $newurl, $value );
-                        
-                            if( $edited != $value ){
-                                $fix = $db->query("UPDATE $db->postmeta SET meta_value = '".$edited."' WHERE meta_id = ".$item->meta_id );
-                                if( $fix )
-                                    $n++;
-                            }
-                        }
-                    }
-                    $results[$option] = array($n, $queries[$option][1]);
+            if(is_array($option)) {
+                foreach($option as $table){
+                    $this->process_row_meta($table, $oldurl, $newurl);
+                }
             }
             else
             {
                 $result = $db->query( $db->prepare( $queries[$option][0], $oldurl, $newurl) );
-                $results[$option] = array($result, $queries[$option][1]);
+                $this->results[$option] = array($result, $queries[$option][1]);
             }
         }
-        return $results;            
+        
+        $tables = array();
+        foreach ($tables_mysql as $table) {
+        
+            if (0 === strpos($table[0], $prefix)) {
+                $tablename = $table[0];
+            
+                $stripped_table = substr($tablename, strlen($prefix));
+                
+                if( !in_array($stripped_table, $core_tables) ){
+                    $tables[$tablename] = $stripped_table;
+                }
+            }
+        }
+        
+        if( !empty($tables) ){
+            $this->migrator_srdb_replacer($oldurl, $newurl, $tables);
+        }
+        
+        return $this->results;            
     }
+    
+    public function migrator_srdb_replacer( $oldurl, $newurl, $tables ) {
+        $db = $this->getDb();
+        
+        $field_types = array('varchar', 'text', 'longtext', 'mediumtext');
+		
+		foreach ($tables as $table => $stripped_table) {
+			// Get a list of columns in this table
+			$fields = $db->get_results('DESCRIBE '.$table, ARRAY_A);
+			
+			$this->columns = array();
+			$prikey_field = false;
+			foreach ($fields as $column) {
+				$primary_key = ('PRI' == $column['Key']) ? true : false;
+				if ($primary_key) $prikey_field = $column['Field'];
+				
+				if( $this->strpos_arr($column['Type'], $field_types) ){
+					$this->columns[] = array('Field' => $column['Field'], 'Type' => $column['Type'], 'Key' => $prikey_field);
+				}
+			}
+			
+			if( !empty($this->columns) && $prikey_field ){
+				$this->process_columns($table, $oldurl, $newurl, $stripped_table);
+			}
+		}
+    }
+    
+    public function process_row_meta($table, $oldurl, $newurl) {
+        $db = $this->getDb();
+        $tbl_name = $db->$table;
+
+        $n = 0;
+        $row_count = $db->get_var( "SELECT COUNT(*) FROM $tbl_name" );
+        $page_size = 10000;
+        $pages = ceil( $row_count / $page_size );
+        
+        if($table == 'options'){
+            $mt_value = 'option_value';
+            $mt_option = 'option_name';
+            $mt_id = 'option_id';
+        }
+        else
+        {
+            $mt_value = 'meta_value';
+            $mt_id = 'meta_id';
+        }
+        
+        for( $page = 0; $page < $pages; $page++ ) {
+            $current_row = 0;
+            $start = $page * $page_size;
+            $end = $start + $page_size;
+            $pmquery = "SELECT * FROM $tbl_name WHERE $mt_value <> ''";
+            $items = $db->get_results( $pmquery );
+            foreach( $items as $item ){
+            $value = $item->$mt_value;
+            if( trim($value) == '' )
+                continue;
+            
+                $edited = $this->unserialize_replace( $oldurl, $newurl, $value );
+            
+                if( $edited != $value ){
+                    if($table == 'options'){
+                        $fix = $db->query("UPDATE $tbl_name SET $mt_value = '".$edited."' WHERE $mt_id = '".$item->$mt_id."' AND $mt_option != 'siteurl' AND $mt_option != 'home'" );
+                    }else{
+                        $fix = $db->query("UPDATE $tbl_name SET $mt_value = '".$edited."' WHERE $mt_id = ".$item->$mt_id );
+                    }
+                    
+                    if( $fix )
+                        $n++;
+                }
+            }
+        }
+        $this->results[$table] = array($n);
+    }
+	
+	public function process_columns( $table, $oldurl, $newurl, $stripped_table ) {
+		$db = $this->getDb();
+		$n = 0;
+        $row_count = $db->get_var( "SELECT COUNT(*) FROM $table" );
+        $page_size = 5000;
+        $pages = ceil( $row_count / $page_size );
+		
+		for( $page = 0; $page < $pages; $page++ ) {
+			$current_row = 0;
+            $start = $page * $page_size;
+            $end = $start + $page_size;
+			
+			foreach ($this->columns as $column){
+				$pri_key = $column['Key'];
+				$col_name = $column['Field'];
+				$pmquery = "SELECT $pri_key, $col_name FROM $table WHERE $col_name <> ''";
+				$items = $db->get_results( $pmquery );
+				
+				foreach( $items as $item ){
+					$value = $item->$col_name;
+					if( trim($value) == '' )
+						continue;
+					
+						$edited = $this->unserialize_replace( $oldurl, $newurl, $value );
+					
+						if( $edited != $value ){
+							$fix = $db->query("UPDATE $table SET $col_name = '".$edited."' WHERE $pri_key = ".$item->$pri_key );
+							
+							if( $fix )
+							$n++;
+						}
+				}
+			}
+		}
+		$this->results[$stripped_table] = array($n);
+	}
 }
