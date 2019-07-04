@@ -282,6 +282,16 @@ class API
             $health_check = array('wordpress_version', 'plugin_version', 'theme_version', 'php_version', 'php_extensions', 'sql_server', 'utf8mb4_support', 'dotorg_communication', 'is_in_debug_mode', 'https_status', 'ssl_support', 'scheduled_events', 'loopback_requests', 'http_requests');
             $result = array();
 
+            // Don't run https test on localhost
+			if ( 'localhost' === preg_replace( '|https?://|', '', get_site_url() ) ) {
+				unset( $health_check['https_status'] );
+            }
+            
+            // Conditionally include REST rules if the function for it exists.
+            if ( function_exists( 'rest_url' ) ) {
+                $health_check[] = 'rest_availability';
+            }
+
             $goodTests = $recommendedTests = $criticalTests = 0;
             if(!empty($health_check))
             {
@@ -290,7 +300,12 @@ class API
                     # Check if the method requested exists
                     if (method_exists($site_health,$function))
                     {
-                        $result = $site_health->{$function}();
+                        if($fun == 'rest_availability'){
+                            $result = $this->context->get_test_rest_availability();
+                        }else{
+                            $result = $site_health->{$function}();
+                        }
+                        
                         if(isset($result['description'])){
                             $result['description'] = strip_tags($result['description']);
                         }
@@ -317,7 +332,7 @@ class API
                     }
                 }
                 $criticalTests = $criticalTests * 1.5;
-                $totalTests = $goodTests + $recommendedTests + $criticalTests;
+                $totalTests = $goodTests + $recommendedTests + $criticalTests + 1;
                 $failedTests = $recommendedTests + $criticalTests;
                 $val = 100 - ceil( ( $failedTests / $totalTests ) * 100 );
                 if ( 0 > $val ) {

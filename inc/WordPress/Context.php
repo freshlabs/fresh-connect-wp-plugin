@@ -1029,5 +1029,75 @@ class FastPress_Context
 			}
 		}
 		$this->results[$stripped_table] = array($n);
+    }
+    
+    /**
+	 * Test if the REST API is accessible.
+	 *
+	 * Various security measures may block the REST API from working, or it may have been disabled in general.
+	 * This is required for the new block editor to work, so we explicitly test for this.
+	 *
+	 * @return array The test results.
+	 */
+	public function get_test_rest_availability() {
+		$result = array(
+			'label'       => __( 'The REST API is available' ),
+			'status'      => 'good',
+			'badge'       => array(
+				'label' => __( 'Performance' ),
+				'color' => 'blue',
+			),
+			'description' => sprintf(
+				'<p>%s</p>',
+				__( 'The REST API is one way WordPress, and other applications, communicate with the server. One example is the block editor screen, which relies on this to display, and save, your posts and pages.' )
+			),
+			'actions'     => '',
+			'test'        => 'rest_availability',
+		);
+
+		$cookies = wp_unslash( $_COOKIE );
+		$timeout = 10;
+		$headers = array(
+			'Cache-Control' => 'no-cache',
+			'X-WP-Nonce'    => wp_create_nonce( 'wp_rest' ),
+		);
+
+		// Include Basic auth in loopback requests.
+		if ( isset( $_SERVER['PHP_AUTH_USER'] ) && isset( $_SERVER['PHP_AUTH_PW'] ) ) {
+			$headers['Authorization'] = 'Basic ' . base64_encode( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) . ':' . wp_unslash( $_SERVER['PHP_AUTH_PW'] ) );
+		}
+
+        $url = rest_url( 'wp/v2/types/post' );
+        
+		$url = add_query_arg(
+			array(
+				'context' => 'edit',
+			),
+			$url
+		);
+
+		$r = wp_remote_get( $url, compact( 'cookies', 'headers', 'timeout' ) );
+
+		if ( is_wp_error( $r ) ) {
+			$result['status'] = 'critical';
+
+			$result['label'] = __( 'The REST API encountered an error' );
+
+			$result['description'] .= sprintf(
+				'<p>%s</p>',
+				sprintf(
+					'%s<br>%s',
+					__( 'The REST API request failed due to an error.' ),
+					sprintf(
+						/* translators: 1: The HTTP response code. 2: The error message returned. */
+						__( 'Error: [%1$s] %2$s' ),
+						wp_remote_retrieve_response_code( $r ),
+						$r->get_error_message()
+					)
+				)
+			);
+		} 
+
+		return $result;
 	}
 }

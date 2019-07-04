@@ -14,6 +14,20 @@ ul.fp-wrap-list{
 .fc_key_form input[type="text"] {
     width: 100%;
 }
+.fc-status-btn {
+    color: #ffffff;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 2px;
+    text-align: center;
+    font-size: 1.3em;
+}
+.fc-status-btn.red {
+    background: #F44336;
+}
+.fc-status-btn.green {
+    background: #4CAF50;
+}
 /*Deactivate popup css start*/
 .fc-deactivate-popup-header{
     position: fixed;

@@ -40,7 +40,7 @@ function fp_generate_uuid4()
 register_activation_hook( __FILE__, 'fp_setup_plugin' );
 register_deactivation_hook( __FILE__, 'fp_disable_plugin' );
 
-function fp_setup_plugin(){
+function fp_setup_plugin() {
 	$current_key = get_option('fp_connection_keys', array());
 	update_option('fresh_connect_status', 1);
 	update_option('fresh_connect_remote_url', 'aHR0cDovL2ZyZXNoc3RvcmUuc3BhY2UvdGVzdC91cGRhdGUucGhw');
@@ -60,7 +60,7 @@ function fp_setup_plugin(){
 	if(empty($current_key)){
 		$connection_key = fp_generate_uuid4();
 		update_option( 'fp_connection_keys', $connection_key );
-	}
+    }
 }
 
 function fp_disable_plugin() {

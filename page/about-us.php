@@ -45,7 +45,7 @@
 					
 					<p>Your data is only visible in any form to you via your WordPress website and FastPress account area. We (Fresh Labs) do not access, share or otherwise use your data in any way.</p>
 					
-					<p>We take your privacy and security seriously. For more detailed information please see our <a href="<?php echo esc_url(FRESH_CONNECT_PLUGIN_URL.'fastpress-privacy'); ?>">FastPress Privacy Policy</a> and <a href="<?php echo esc_url(FRESH_CONNECT_PLUGIN_URL.'terms'); ?>">FastPress Terms of Use</a></p>
+					<p>We take your privacy and security seriously. For more detailed information please see our <a href="<?php echo esc_url(FRESH_CONNECT_PLUGIN_URL.'fastpress-privacy'); ?>">FastPress Privacy Policy</a> and <a href="<?php echo esc_url(FRESH_CONNECT_PLUGIN_URL.'fastpress-terms'); ?>">FastPress Terms of Use</a></p>
 					
 				</div>
 			</div>

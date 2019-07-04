@@ -3,6 +3,7 @@
 	<div class="card">
 		<h2 class="title"><?php esc_html_e('Connection Status', FRESH_TEXT_DOMAIN); ?></h2>
 		<p>This page shows if your website is connected to FastPress. If your website is not connected some features will not work - please <a href="<?= FRESH_CONNECT_PLUGIN_URL ?>support" target="_blank">Contact Support</a> if this is the case.</p>
+        <div class="fc-status-btn red">Disconnected</div>
 	</div>
 	
 	<div class="card">
