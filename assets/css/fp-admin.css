@@ -22,8 +22,8 @@ ul.fp-wrap-list{
     text-align: center;
     font-size: 1.3em;
 }
-.fc-status-btn.red {
-    background: #F44336;
+.fc-status-btn.orange {
+    background: #ff9800;
 }
 .fc-status-btn.green {
     background: #4CAF50;

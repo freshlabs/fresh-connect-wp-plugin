@@ -106,7 +106,7 @@ class API
 		return $this->apioutput;
 	}
 	
-	function getSSLStatus($inCall = false)
+	public function getSSLStatus($inCall = false)
 	{
 		$status = $this->context->isSsl();
 		
@@ -119,7 +119,7 @@ class API
 		}
 	}
 	
-	function setSSL()
+	public function setSSL()
 	{
 		$value = empty($this->post['ssl_status']) ? false : $this->post['ssl_status'];
 		
@@ -132,16 +132,62 @@ class API
 		return $this->output();
 	}
 	
-	function getWPVersion()
+	public function getWPVersion()
 	{	
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
 		
 		return $this->output();
-	}
+    }
+    
+    public function setGoogeAPIKey()
+    {
+        if( empty($this->post['ga_apikey']) ) {
+            $this->error = true;
+            $this->errormessage = 'Google Api key is missing';
+            
+            return $this->output();
+        }
+
+        $key = trim( $this->post['ga_apikey'] );
+        
+        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        if ( is_plugin_active( 'google-pagespeed-insights/google-pagespeed-insights.php' ) ) {
+            $gaapikey = get_option('gpagespeedi_options');
+
+            if( isset($gaapikey['google_developer_key']) ){
+                $gaapikey['google_developer_key'] = $key;
+                update_option('gpagespeedi_options', $gaapikey);
+            }
+        }
+        else {
+            $this->error = true;
+            $this->errormessage = 'Google Pagespeed Insights Plugin is not active';
+        }
+
+        return $this->output();
+    }
+
+    public function getGoogeAPIKey() 
+    {
+        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        if ( is_plugin_active( 'google-pagespeed-insights/google-pagespeed-insights.php' ) ) {
+            $gaapikey = get_option('gpagespeedi_options');
+
+            if( isset($gaapikey['google_developer_key']) ){
+                $this->apioutput['ga_apikey'] = $gaapikey['google_developer_key'];
+            }
+        }
+        else {
+            $this->error = true;
+            $this->errormessage = 'Google Pagespeed Insights Plugin is not active';
+        }
+
+        return $this->output();
+    }
 	
-	function getOption()
+	public function getOption()
 	{
 		$option = empty($this->post['option_key']) ? null : $this->post['option_key'];
 		$value = $this->context->optionGet($option);
@@ -154,7 +200,7 @@ class API
 		return $this->output();
 	}
 	
-	function getGeneralOptions($inCall = false)
+	public function getGeneralOptions($inCall = false)
 	{
 		$data = $this->getstate->getSiteInfo();
 		
@@ -173,7 +219,7 @@ class API
 		}
 	}
 	
-	function setMultipleOptions()
+	public function setMultipleOptions()
 	{
 		$options = is_array($this->post['options']) ? $this->post['options'] : array();
 		
@@ -394,5 +440,137 @@ class API
 		$this->apioutput['wp_version'] = $this->wp_version;
 		
 		return $this->output();
+    }
+
+    private function sort_array( $array, $key, $direction = 'asc' )
+	{
+		usort( $array, function( $a, $b ) use ( $key, $direction ) {
+			if ( abs( $a[ $key ] - $b[ $key ] ) < 0.00000001 ) {
+				return 0; // almost equal
+			} else if ( ( $a[ $key ] - $b[ $key ] ) < 0 ) {   
+				return $direction == 'asc' ? -1 : 1;
+			} else {
+				return $direction == 'asc' ? 1 : -1;
+			}
+		});
+
+		return $array;
 	}
+    
+    public function getPageSpeedReport() 
+    {
+        global $wpdb;
+        $gpi_page_stats		= $wpdb->prefix . 'gpi_page_stats';
+		$gpi_page_reports	= $wpdb->prefix . 'gpi_page_reports';
+
+        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        if ( is_plugin_active( 'google-pagespeed-insights/google-pagespeed-insights.php' ) ) {
+            $report_list = $wpdb->get_results("SELECT `URL`, `desktop_score`, `mobile_score`, `type`, `desktop_last_modified`, `mobile_last_modified` FROM $gpi_page_stats", ARRAY_A);
+        
+            $desktop_score = $mobile_score = $pages = 0;
+
+            if($report_list){
+                $pages = count( $report_list );
+                foreach( $report_list as $list ){
+                    $desktop_score += $list['desktop_score'];
+                    $mobile_score += $list['mobile_score'];
+                }
+            }
+
+            $desktop_score = round( $desktop_score / $pages );
+            $mobile_score = round( $mobile_score / $pages );
+
+            // Desktop 
+            $all_page_reports = $wpdb->get_results( $wpdb->prepare(
+				"
+					SELECT r.rule_key, r.rule_name, r.rule_score
+					FROM $gpi_page_stats as s
+					INNER JOIN $gpi_page_reports as r
+						ON r.page_id = s.ID
+						AND r.strategy = %s
+						AND r.rule_type = %s
+						AND r.rule_score < .9
+					WHERE s.desktop_score IS NOT NULL
+					ORDER BY r.rule_score DESC
+				",
+				'desktop',
+				'opportunity'
+            ), ARRAY_A );
+            
+            $summary_reports = $desktop_summary_reports = $mobile_summary_reports = array();
+
+            if ( $all_page_reports ) {
+                foreach ( $all_page_reports as $page_report ) {
+                    if ( isset( $summary_reports[ $page_report['rule_key'] ] ) ) {
+                        $summary_reports[ $page_report['rule_key'] ]['avg_score'] += $page_report['rule_score'];
+                        $summary_reports[ $page_report['rule_key'] ]['occurances']++;
+                    } else {
+                        $summary_reports[ $page_report['rule_key'] ] = array(
+                            'rule_name'		=> ( 'uses-optimized-images' != $page_report['rule_key'] ) ? $page_report['rule_name'] : $page_report['rule_name'] . '<span class="shortpixel_blurb"> &ndash; <a href="https://shortpixel.com/h/af/PCFTWNN142247" target="_blank">' . __( 'Auto-Optimize images with ShortPixel. Sign up for 150 free credits!', 'gpagespeedi') . '</a></span>',
+                            'avg_score'		=> $page_report['rule_score'],
+                            'occurances'	=> 1
+                        );
+                    }
+                }
+        
+                foreach ( $summary_reports as &$summary_report ) {
+                    $summary_report['avg_score'] = round( $summary_report['avg_score'] / $summary_report['occurances'], 2 );
+                    $summary_report['avg_score'] = $summary_report['avg_score'] * 100;
+                }
+    
+                $desktop_summary_reports = $this->sort_array( $summary_reports, 'avg_score' );
+            }
+
+            // Mobile 
+            $all_page_reports = $wpdb->get_results( $wpdb->prepare(
+				"
+					SELECT r.rule_key, r.rule_name, r.rule_score
+					FROM $gpi_page_stats as s
+					INNER JOIN $gpi_page_reports as r
+						ON r.page_id = s.ID
+						AND r.strategy = %s
+						AND r.rule_type = %s
+						AND r.rule_score < .9
+					WHERE s.mobile_score IS NOT NULL
+					ORDER BY r.rule_score DESC
+				",
+				'mobile',
+				'opportunity'
+            ), ARRAY_A );
+            
+            $summary_reports = array();
+
+            if ( $all_page_reports ) {
+                foreach ( $all_page_reports as $page_report ) {
+                    if ( isset( $summary_reports[ $page_report['rule_key'] ] ) ) {
+                        $summary_reports[ $page_report['rule_key'] ]['avg_score'] += $page_report['rule_score'];
+                        $summary_reports[ $page_report['rule_key'] ]['occurances']++;
+                    } else {
+                        $summary_reports[ $page_report['rule_key'] ] = array(
+                            'rule_name'		=> ( 'uses-optimized-images' != $page_report['rule_key'] ) ? $page_report['rule_name'] : $page_report['rule_name'] . '<span class="shortpixel_blurb"> &ndash; <a href="https://shortpixel.com/h/af/PCFTWNN142247" target="_blank">' . __( 'Auto-Optimize images with ShortPixel. Sign up for 150 free credits!', 'gpagespeedi') . '</a></span>',
+                            'avg_score'		=> $page_report['rule_score'],
+                            'occurances'	=> 1
+                        );
+                    }
+                }
+        
+                foreach ( $summary_reports as &$summary_report ) {
+                    $summary_report['avg_score'] = round( $summary_report['avg_score'] / $summary_report['occurances'], 2 );
+                    $summary_report['avg_score'] = $summary_report['avg_score'] * 100;
+                }
+    
+                $mobile_summary_reports = $this->sort_array( $summary_reports, 'avg_score' );
+            }
+
+            $data = array('report_list' => $report_list, 'avg_desktop_score' => $desktop_score, 'avg_mobile_score' => $mobile_score, 'improvement_area_desktop' => $desktop_summary_reports, 'improvement_area_mobile' => $mobile_summary_reports);
+
+            $this->apioutput['result'] = $data;
+        }
+        else{
+            $this->error = true;
+            $this->errormessage = 'Google Pagespeed Insights Plugin is not active';
+        }
+        
+        return $this->output();  
+    }
 }

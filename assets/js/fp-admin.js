@@ -70,6 +70,27 @@
                 return false;
             }
         }
-	});
+    });
+
+    jQuery( document ).on('focus', 'input[name="fc_key"]', function(){
+        jQuery(this).removeAttr('style');
+    })
+    
+    jQuery( document ).on('submit', '.fc_key_form', function(){
+
+        var key = jQuery('input[name="fc_key"]').val();
+
+        if(key == ''){
+            jQuery('input[name="fc_key"]').css({"border-color": "#f72904", "box-shadow": "rgba(230, 10, 10, 0.63) 0px 0px 2px", "outline": "2px solid transparent"});
+            return false;
+        }
+
+        if( confirm('Are you sure you want to update the Fresh Connect Key? This can break your websites connection to FastPress and should only be done under the instruction of the Fresh Labs support team.') ){
+            return true;
+        }
+        else{
+            return false;
+        }
+    });
 
 })( jQuery );

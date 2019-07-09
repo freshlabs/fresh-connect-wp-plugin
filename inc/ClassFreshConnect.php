@@ -20,7 +20,8 @@ class Fresh_Connect_Admin {
 		
 		add_action( "admin_menu", array( $this, 'fresh_admin_menu' ) );
 		add_action( "admin_footer", array( $this, 'fresh_admin_footer' ) );
-		add_action( 'admin_notices', array( $this, 'fresh_admin_notices' ) );
+        add_action( 'admin_notices', array( $this, 'fresh_admin_notices' ) );
+        add_action( 'admin_init', array( $this, 'fresh_admin_init' ) );
 		
 		add_action( "pre_user_query", array( $this, 'fresh_pre_user_query' ) );
 		add_action( "delete_user", array( $this, 'fresh_delete_user' ) );
@@ -42,8 +43,8 @@ class Fresh_Connect_Admin {
     }
 	
 	public function fresh_admin_menu() {
-		add_menu_page( __( 'Fresh Connect', FRESH_TEXT_DOMAIN ), 'Fresh Connect', 'manage_options', 'fresh-connect-dash', array($this, 'main_menu_page'), 'dashicons-menu', 4 ); 
-		add_submenu_page( 'fresh-connect-dash', 'Fresh Connect', 'Connection Status', 'manage_options', 'fresh-connect-status', array($this, 'connection_status_page') );
+		add_menu_page( __( 'Fresh Connect', FRESH_TEXT_DOMAIN ), 'Fresh Connect', 'manage_options', 'fresh-connect-aboutus', array($this, 'main_menu_page'), 'dashicons-menu', 4 ); 
+		add_submenu_page( 'fresh-connect-aboutus', 'Fresh Connect', 'Connection Status', 'manage_options', 'fresh-connect-status', array($this, 'connection_status_page') );
 	}
 	
 	public function main_menu_page() {
@@ -51,6 +52,19 @@ class Fresh_Connect_Admin {
 	}
 	
 	public function connection_status_page() {
+        $fastpress_status = get_option('fp_status');
+        if( isset($_POST['fc_key']) ) {
+            $key = trim($_POST['fc_key']);
+            $length = strlen($key);
+            if($length < 32){
+                $_REQUEST['action'] = 'errlength';
+                $this->fresh_admin_notices();
+            }else{
+                //update_option('fp_connection_keys', $key);
+                $_REQUEST['action'] = 'success';
+                $this->fresh_admin_notices();
+            }
+        }
 		include( FRESH_CONNECT_DIR_PATH . 'page/status.php' );
 	}
 	
@@ -122,7 +136,7 @@ class Fresh_Connect_Admin {
 	}
 	
 	public function fresh_action_links( $links ) {
-		$aboutus_link = admin_url().'admin.php?page=fresh-connect-dash&fctab=fresh-connect-aboutus';
+		$aboutus_link = admin_url().'admin.php?page=fresh-connect-aboutus';
 		$abt_link = '<a href="' . $aboutus_link . '">About Us</a>';
 		array_unshift($links, $abt_link);
 		
@@ -183,8 +197,32 @@ class Fresh_Connect_Admin {
 			$message = __( 'It is not possible to delete this admin user as it is required for FastPress', FRESH_TEXT_DOMAIN );
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $this->warning_notice ), esc_html( $message ) ); 
+        }
+        
+        if ( $pagenow == 'admin.php' && isset($_REQUEST['action']) && $_REQUEST['action'] == 'errlength') {
+			$message = __( 'Fresh connect key should be minimum 32 character long', FRESH_TEXT_DOMAIN );
+
+			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $this->error_notice ), esc_html( $message ) ); 
+        }
+        
+        if ( $pagenow == 'admin.php' && isset($_REQUEST['action']) && $_REQUEST['action'] == 'success') {
+			$message = __( 'Fresh connect key saved successfully', FRESH_TEXT_DOMAIN );
+
+			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $this->success_notice ), esc_html( $message ) ); 
 		}
-	}
+    }
+    
+    public function fresh_admin_init() {
+
+        if ( is_plugin_active( 'google-pagespeed-insights/google-pagespeed-insights.php' ) ) {
+            $gaapikey = get_option('gpagespeedi_options');
+
+            if( isset($gaapikey['google_developer_key']) && empty($gaapikey['google_developer_key']) ){
+                $gaapikey['google_developer_key'] = "AIzaSyBziKug10AVK3p3PYiE61VKPAFezsx6iA0";
+                update_option('gpagespeedi_options', $gaapikey);
+            }
+        }
+    }
 }
  
 $freshclassobj = new Fresh_Connect_Admin();
