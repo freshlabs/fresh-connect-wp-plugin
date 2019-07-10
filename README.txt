@@ -1,7 +1,7 @@
 === Fresh Connect by Fresh Labs ===
 Contributors: careybaird
-Tags: fresh connect, about us, basic details
-Requires at least: 4.6
+Tags: fresh connect, about us, fastpress
+Requires at least: 5.1
 Tested up to: 5.2.2
 Stable tag: 1.0
 Requires PHP: 7.1
