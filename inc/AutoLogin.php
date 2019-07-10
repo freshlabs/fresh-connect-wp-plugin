@@ -75,6 +75,8 @@ class FS_Autologin
             } catch (Exception $e) {
                 // We are just using the nonce to make sure it can't be used again (no need to login)
             }
+            
+            update_option('fp_connection_status', true);
 
 			wp_redirect($redirectUri);
             return;
@@ -126,6 +128,8 @@ class FS_Autologin
         }
 
         $this->context->setCookie($this->getCookieName(), '1');
+
+        update_option('fp_connection_status', true);
 
 		wp_redirect($redirectUri);
     }

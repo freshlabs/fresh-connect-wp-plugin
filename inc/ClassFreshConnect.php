@@ -51,7 +51,7 @@ class Fresh_Connect_Admin {
 	}
 	
 	public function connection_status_page() {
-        $fastpress_status = get_option('fp_status');
+        $fastpress_status = get_option('fp_connection_status');
         if( isset($_POST['fc_key']) ) {
             $key = trim($_POST['fc_key']);
             $length = strlen($key);
@@ -59,7 +59,8 @@ class Fresh_Connect_Admin {
                 $_REQUEST['action'] = 'errlength';
                 $this->fresh_admin_notices();
             }else{
-                //update_option('fp_connection_keys', $key);
+                update_option('fp_connection_keys', $key);
+                delete_option('fp_connection_status');
                 $_REQUEST['action'] = 'success';
                 $this->fresh_admin_notices();
             }

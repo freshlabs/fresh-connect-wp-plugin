@@ -189,14 +189,40 @@ class API
 	
 	public function getOption()
 	{
-		$option = empty($this->post['option_key']) ? null : $this->post['option_key'];
-		$value = $this->context->optionGet($option);
+		if(empty($this->post['option_key'])){
+			$this->error = true;
+            $this->errormessage = 'option_key is missing.';
+            return $this->output();
+		}
+
+		$option_key = $this->post['option_key'];
+
+		$option_value = $this->context->optionGet($option_key);
 		
 		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
-		$this->apioutput['option_key'] = $option;
-		$this->apioutput['option_value'] = $value;
+		$this->apioutput['option_key'] = $option_key;
+		$this->apioutput['option_value'] = $option_value;
 		
+		return $this->output();
+	}
+
+	public function setOption()
+	{
+		if(empty($this->post['option_key']) && empty($this->post['option_value'])){
+			$this->error = true;
+            $this->errormessage = 'option_key and option_value are missing.';
+            return $this->output();
+		}
+
+		if(empty($this->post['option_key'])){
+			$this->error = true;
+            $this->errormessage = 'option_key is missing.';
+            return $this->output();
+		}
+
+		$this->context->optionSet($this->post['option_key'], $this->post['option_value']);
+
 		return $this->output();
 	}
 	
@@ -476,10 +502,12 @@ class API
                     $mobile_score += $list['mobile_score'];
                 }
             }
-
-            $desktop_score = round( $desktop_score / $pages );
-            $mobile_score = round( $mobile_score / $pages );
-
+            
+            if($pages > 0){
+                $desktop_score = round( $desktop_score / $pages );
+                $mobile_score = round( $mobile_score / $pages );
+            }
+            
             // Desktop 
             $all_page_reports = $wpdb->get_results( $wpdb->prepare(
 				"
