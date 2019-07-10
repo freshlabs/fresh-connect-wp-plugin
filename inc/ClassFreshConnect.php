@@ -21,7 +21,6 @@ class Fresh_Connect_Admin {
 		add_action( "admin_menu", array( $this, 'fresh_admin_menu' ) );
 		add_action( "admin_footer", array( $this, 'fresh_admin_footer' ) );
         add_action( 'admin_notices', array( $this, 'fresh_admin_notices' ) );
-        add_action( 'admin_init', array( $this, 'fresh_admin_init' ) );
 		
 		add_action( "pre_user_query", array( $this, 'fresh_pre_user_query' ) );
 		add_action( "delete_user", array( $this, 'fresh_delete_user' ) );
@@ -212,17 +211,6 @@ class Fresh_Connect_Admin {
 		}
     }
     
-    public function fresh_admin_init() {
-
-        if ( is_plugin_active( 'google-pagespeed-insights/google-pagespeed-insights.php' ) ) {
-            $gaapikey = get_option('gpagespeedi_options');
-
-            if( isset($gaapikey['google_developer_key']) && empty($gaapikey['google_developer_key']) ){
-                $gaapikey['google_developer_key'] = "AIzaSyBziKug10AVK3p3PYiE61VKPAFezsx6iA0";
-                update_option('gpagespeedi_options', $gaapikey);
-            }
-        }
-    }
 }
  
 $freshclassobj = new Fresh_Connect_Admin();
