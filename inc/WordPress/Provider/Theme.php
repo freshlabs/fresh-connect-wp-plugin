@@ -94,6 +94,7 @@ class FastPress_Provider_Theme
 		@include_once ABSPATH.'wp-admin/includes/theme.php';
 		extract($args);
         $return = array();
+		$result = true;
 		if(empty($items)) {
 			$return['error'] = "Invalid arguments";
 		}else {

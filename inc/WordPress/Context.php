@@ -392,7 +392,7 @@ class FastPress_Context
 
     public function output($content)
     {
-        print $content;
+        echo esc_html($content);
     }
 
     public function getCurrentUser()

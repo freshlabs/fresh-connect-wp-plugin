@@ -16,12 +16,17 @@ class FS_Autologin
     }
     function checkLoginToken()
     {
-	
-        if (!isset($_GET['auto_login'])) {
+        $request = FastPress_Request::createFromGlobals();
+
+        if ($request->getMethod() !== 'GET') {
             return;
         }
 
-        if (empty($_GET['auto_login']) || empty($_GET['signature']) || empty($_GET['message_id']) || !array_key_exists('goto', $_GET)) {
+        if (!isset($request->query['auto_login'])) {
+            return;
+        }
+
+        if (empty($request->query['auto_login']) || empty($request->query['signature']) || empty($request->query['message_id']) || !array_key_exists('goto', $request->query)) {
             return;
         }
 
@@ -31,7 +36,7 @@ class FS_Autologin
         $isHttps           = $this->context->isSsl();
         $shouldWww         = (bool)preg_match('{^https?://www\.}', $siteUrl);
         $shouldHttps       = $this->context->isSslAdmin();
-        $alreadyRedirected = !empty($_GET['auto_login_fixed']);
+        $alreadyRedirected = !empty($request->query['auto_login_fixed']);
         if (
             (
                 ($isHttps !== $shouldHttps)
@@ -49,8 +54,12 @@ class FS_Autologin
 
             return;
         } 
-
-        $username = empty($_GET['username']) ? null : $_GET['username'];
+		
+		if( empty($request->query['username']) ){
+			$username = null;
+		}else{
+			$username = sanitize_user($request->query['username']);
+		}
 
         if ($username === null) {
             $users = $this->context->getUsers(array('role' => 'administrator', 'number' => 1, 'orderby' => 'ID'));
@@ -60,14 +69,22 @@ class FS_Autologin
             $username = $users[0]->user_login;
         }
 
-        $where = isset($_GET['goto']) ? $_GET['goto'] : '';
+		if( isset($request->query['goto']) ){
+			$where = sanitize_text_field($request->query['goto']);
+		}else{
+			$where = '';
+		}
 
-        $messageId = $_GET['message_id'];
-
+		if( isset($request->query['message_id']) ){
+			$messageId = sanitize_text_field($request->query['message_id']);
+		}else{
+			$messageId = '';
+		}
+		
         $currentUser = $this->context->getCurrentUser();
 
         $adminUri    = rtrim($this->context->getAdminUrl(''), '/').'/'.$where;
-        $redirectUri = $this->modifyUriParameters($adminUri, $_GET, array('signature', 'username', 'auto_login', 'message_id', 'goto', 'redirect', 'auto_login_fixed'));
+        $redirectUri = $this->modifyUriParameters($adminUri, $request->query, array('signature', 'username', 'auto_login', 'message_id', 'goto', 'redirect', 'auto_login_fixed'));
 
         if ($currentUser->user_login === $username) {
             try {
@@ -101,7 +118,7 @@ class FS_Autologin
 
         $publicKey = $this->getPublicKey();
         $message   = $this->getConnectionKey().$where.$messageId;
-        $signed    = base64_decode($_GET['signature']);
+        $signed    = base64_decode($request->query['signature']);
 
         if (empty($publicKey) || empty($message) || empty($signed)) {
             $this->context->wpDie(esc_html__('The automatic login token isn\'t properly signed. Please contact our support for help.', FRESH_TEXT_DOMAIN), '', 200);

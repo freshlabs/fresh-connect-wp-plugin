@@ -1,14 +1,20 @@
 <div class="wrap about-wrap full-width-layout fresh-connect-page">
-	<h1>Welcome to the Fresh Connect</h1>
-	<p>The Fresh Connect Plugin connects your WordPress blog with the FastPress cloud hosting platform.</p>
+	<h1><?php esc_html_e('Welcome to the Fresh Connect', FRESH_TEXT_DOMAIN); ?></h1>
+	<p><?php _e('The Fresh Connect Plugin connects your WordPress blog with the FastPress cloud hosting platform.', FRESH_TEXT_DOMAIN); ?></p>
 
-	<p>This gives you many powerful features including one click login (no more frustration losing passwords!) and powerful statistics that you can use to drive your website forward.</p>
+	<p><?php _e('This gives you many powerful features including one click login (no more frustration losing passwords!) and powerful statistics that you can use to drive your website forward.', FRESH_TEXT_DOMAIN); ?></p>
 	
-	<?php $active_tab = isset( $_GET[ 'fctab' ] ) ? $_GET[ 'fctab' ] : 'fresh-connect-aboutus'; ?>
+	<?php 
+	if( isset( $_GET[ 'fctab' ] ) ): 
+		$active_tab = sanitize_html_class($_GET[ 'fctab' ]);
+	else:
+		$active_tab = 'fresh-connect-aboutus';
+	endif;
+	?>
 	
 	<h2 class="nav-tab-wrapper wp-clearfix">
-        <a href="<?= admin_url(); ?>admin.php?page=fresh-connect-aboutus" class="nav-tab <?php echo $active_tab == 'fresh-connect-aboutus' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('About this Plugin', FRESH_TEXT_DOMAIN); ?></a>
-        <?php /*<a href="<?= admin_url(); ?>admin.php?page=fresh-connect-aboutus&fctab=fresh-connect-dash" class="nav-tab <?php echo $active_tab == 'fresh-connect-dash' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Basic Details', FRESH_TEXT_DOMAIN); ?></a>*/ ?>
+        <a href="<?php echo esc_url( admin_url('admin.php?page=fresh-connect-aboutus') ); ?>" class="nav-tab <?php echo esc_attr($active_tab == 'fresh-connect-aboutus' ? 'nav-tab-active' : ''); ?>"><?php esc_html_e('About this Plugin', FRESH_TEXT_DOMAIN); ?></a>
+        <?php /*<a href="<?php echo esc_url( admin_url('admin.php?page=fresh-connect-aboutus&fctab=fresh-connect-dash') ); ?>" class="nav-tab <?php echo $active_tab == 'fresh-connect-dash' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Basic Details', FRESH_TEXT_DOMAIN); ?></a>*/ ?>
 	</h2>
 	
 	<?php

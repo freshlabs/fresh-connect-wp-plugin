@@ -43,7 +43,7 @@ class Fresh_Connect_Admin {
 	
 	public function fresh_admin_menu() {
 		add_menu_page( __( 'Fresh Connect', FRESH_TEXT_DOMAIN ), 'Fresh Connect', 'manage_options', 'fresh-connect-aboutus', array($this, 'main_menu_page'), 'dashicons-menu', 4 ); 
-		add_submenu_page( 'fresh-connect-aboutus', 'Fresh Connect', 'Connection Status', 'manage_options', 'fresh-connect-status', array($this, 'connection_status_page') );
+		add_submenu_page( 'fresh-connect-aboutus', 'Fresh Connect', __('Connection Status', FRESH_TEXT_DOMAIN), 'manage_options', 'fresh-connect-status', array($this, 'connection_status_page') );
 	}
 	
 	public function main_menu_page() {
@@ -53,7 +53,7 @@ class Fresh_Connect_Admin {
 	public function connection_status_page() {
         $fastpress_status = get_option('fp_connection_status');
         if( isset($_POST['fc_key']) ) {
-            $key = trim($_POST['fc_key']);
+            $key = sanitize_text_field($_POST['fc_key']);
             $length = strlen($key);
             if($length < 32){
                 $_REQUEST['action'] = 'errlength';
@@ -91,8 +91,10 @@ class Fresh_Connect_Admin {
 			$all_num = $users['total_users'] - 1;
 			$class_adm = ( strpos($views['administrator'], 'current') === false ) ? "" : "current";
 			$class_all = ( strpos($views['all'], 'current') === false ) ? "" : "current";
-			$views['administrator'] = '<a href="users.php?role=administrator" class="' . $class_adm . '">' . translate_user_role('Administrator') . ' <span class="count">(' . $admins_num . ')</span></a>';
-			$views['all'] = '<a href="users.php" class="' . $class_all . '">' . __('All') . ' <span class="count">(' . $all_num . ')</span></a>';
+			
+			$views['administrator'] = '<a href="'.esc_url('users.php?role=administrator').'" class="' . esc_attr($class_adm) . '">' . translate_user_role('Administrator') . ' <span class="count">(' . esc_html($admins_num) . ')</span></a>';
+			
+			$views['all'] = '<a href="'.esc_url('users.php').'" class="' . esc_attr($class_all) . '">' . __('All', FRESH_TEXT_DOMAIN) . ' <span class="count">(' . esc_html($all_num) . ')</span></a>';
 		}
 		
 		return $views;
@@ -114,7 +116,7 @@ class Fresh_Connect_Admin {
 			);
 			
 			if( $current_user->user_login != $user_obj->user_login ){
-				$actions["delete"] = '<a href="'.$delete_url.'" class="fc_delete_user_link">Delete</a>';
+				$actions["delete"] = '<a href="'. esc_url($delete_url) .'" class="fc_delete_user_link">Delete</a>';
 			}
 		}
 		
@@ -137,7 +139,7 @@ class Fresh_Connect_Admin {
 	
 	public function fresh_action_links( $links ) {
 		$aboutus_link = admin_url().'admin.php?page=fresh-connect-aboutus';
-		$abt_link = '<a href="' . $aboutus_link . '">About Us</a>';
+		$abt_link = '<a href="' . esc_url($aboutus_link) . '">About Us</a>';
 		array_unshift($links, $abt_link);
 		
 		$deactivate_url =
@@ -150,7 +152,7 @@ class Fresh_Connect_Admin {
 			admin_url( 'plugins.php' )
 		);
 
-		$links["deactivate"] = '<a href="'.$deactivate_url.'" class="fc_deactivate_link">Deactivate</a>';
+		$links["deactivate"] = '<a href="'. esc_url($deactivate_url) .'" class="fc_deactivate_link">Deactivate</a>';
 		
 		return $links;
 	}
@@ -160,7 +162,7 @@ class Fresh_Connect_Admin {
 
 		if( $plugin_file_name == $this->plugin_file ) {
 			// you can still use array_unshift() to add links at the beginning
-			$links_array[] = '<a href="' . $support . '" target="_blank">Support</a>';
+			$links_array[] = '<a href="' . esc_url($support) . '" target="_blank">Support</a>';
 		}
 		
 		return $links_array;

@@ -13,6 +13,7 @@ class API
 	private $siteurl;
 	private $wp_version;
 	private $userdata;
+	private $error = false;
 	private $post = array();
 	
 	public function __construct(FastPress_Context $context, Fastpress_Action_GetState $getstate, $fp_status, $con_key)
@@ -43,7 +44,11 @@ class API
 		
 		$this->post = $parameters;
 		
-		$username = empty($this->post['username']) ? null : $this->post['username'];
+		if( isset($this->post['username']) && !empty($this->post['username']) ){
+			$username = sanitize_user($this->post['username']);
+		}else{
+			$username = null;
+		}
 		
 		if ( ! username_exists( $username ) ){
 			$users = get_users(array('role' => 'administrator', 'number' => 1, 'orderby' => 'ID'));
@@ -54,32 +59,51 @@ class API
 				return $this->output();
             }
 			
-            $this->post['username'] = $users[0]->user_login;
+            $username = $users[0]->user_login;
 		}
 		
-		$userdata = get_user_by('login', $this->post['username']);
+		$userdata = get_user_by('login', $username);
 		
 		if(!in_array('administrator', $userdata->roles)){
 			$this->error = true;
-			$this->errormessage = "User {$this->post['username']} have not required permission to access the data.";
+			$this->errormessage = "User {$username} have not required permission to access the data.";
 			return $this->output();
 		}
 		
 		$this->userdata = $userdata;
 		
-        $hash = md5($this->con_key.$this->post['timestamp']);
+		if( isset($this->post['timestamp']) ){
+			$timestamp = sanitize_text_field($this->post['timestamp']);
+		}else{
+			$this->error = true;
+			$this->errormessage = "timestamp key field is missing.";
+			return $this->output();
+		}
+		
+        $hash = md5($this->con_key.$timestamp);
+		
+		if( isset($this->post['hash']) ){
+			$rhash = sanitize_text_field($this->post['hash']);
+		}
 
-        if ($hash !== $this->post['hash'])
+        if ($hash !== $rhash)
         {
             $this->error = true;
             $this->errormessage = 'Invalid hash - Authentication faild, please check connection key is correct.';
             return $this->output();
         }
 		
+		if( isset($this->post['request_method']) ){
+			$request_method = sanitize_text_field($this->post['request_method']);
+		}else{
+			$this->error = true;
+            $this->errormessage = 'Request method is missing.';
+            return $this->output();
+		}
 		# Check if the method requested exists, and pass on to that
-        if (method_exists($this,$this->post['request_method']))
+        if (method_exists($this,$request_method))
         {
-            $data = $this->{$this->post['request_method']}();
+            $data = $this->{$request_method}();
 			return $data;
         }
         else
@@ -102,7 +126,6 @@ class API
             $this->apioutput['status'] = 'success';
         }
 
-        //echo json_encode($this->apioutput);
 		return $this->apioutput;
 	}
 	
@@ -110,7 +133,6 @@ class API
 	{
 		$status = $this->context->isSsl();
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['ssl_status'] = $status;
 		
@@ -121,11 +143,14 @@ class API
 	
 	public function setSSL()
 	{
-		$value = empty($this->post['ssl_status']) ? false : $this->post['ssl_status'];
+		if( isset($this->post['ssl_status']) && $this->post['ssl_status'] == true ){
+			$value = true;
+		}else{
+			$value = false;
+		}
 		
 		$this->context->setSSL($value);
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
 		
@@ -134,7 +159,6 @@ class API
 	
 	public function getWPVersion()
 	{	
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
 		
@@ -150,7 +174,7 @@ class API
             return $this->output();
         }
 
-        $key = trim( $this->post['ga_apikey'] );
+        $key = sanitize_text_field($this->post['ga_apikey']);
         
         include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         if ( is_plugin_active( 'google-pagespeed-insights/google-pagespeed-insights.php' ) ) {
@@ -189,17 +213,16 @@ class API
 	
 	public function getOption()
 	{
-		if(empty($this->post['option_key'])){
+		if( empty($this->post['option_key']) ){
 			$this->error = true;
             $this->errormessage = 'option_key is missing.';
             return $this->output();
 		}
 
-		$option_key = $this->post['option_key'];
+		$option_key = sanitize_key($this->post['option_key']);
 
 		$option_value = $this->context->optionGet($option_key);
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['option_key'] = $option_key;
 		$this->apioutput['option_value'] = $option_value;
@@ -219,9 +242,22 @@ class API
 			$this->error = true;
             $this->errormessage = 'option_key is missing.';
             return $this->output();
+        }
+		
+		if(empty($this->post['option_value'])){
+			$this->error = true;
+            $this->errormessage = 'option_value is missing.';
+            return $this->output();
+        }
+        
+        $option_key = sanitize_key($this->post['option_key']);
+		if( function_exists('sanitize_textarea_field') ){
+			$option_value = sanitize_textarea_field($this->post['option_value']);
+		}else{
+			$option_value = wp_kses_post($this->post['option_value']);
 		}
 
-		$this->context->optionSet($this->post['option_key'], $this->post['option_value']);
+		$this->context->optionSet($option_key, $option_value);
 
 		return $this->output();
 	}
@@ -230,7 +266,6 @@ class API
 	{
 		$data = $this->getstate->getSiteInfo();
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
 		if(isset($data['error'])){
@@ -247,11 +282,14 @@ class API
 	
 	public function setMultipleOptions()
 	{
-		$options = is_array($this->post['options']) ? $this->post['options'] : array();
+		if( isset($this->post['options']) && is_array($this->post['options']) ){
+			$options = $this->post['options'];
+		}else{
+			$options = array();
+		}
 		
 		$this->context->setMultipleOptions($options);
 
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
 		return $this->output();
@@ -259,11 +297,14 @@ class API
 	
 	public function getAllThemes($inCall = false)
 	{
-	    $options = is_array($this->post['theme_options']) ? $this->post['theme_options'] : array();
+		if( isset($this->post['theme_options']) && is_array($this->post['theme_options']) ){
+			$options = $this->post['theme_options'];
+		}else{
+			$options = array();
+		}
 		
 		$themes = $this->getstate->execute(array('themes' => array('type' => 'themes', 'options' => $options)));
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
 		if(isset($themes['result']['error'])){
@@ -281,11 +322,14 @@ class API
 	
 	public function getAllPlugins($inCall = false)
 	{
-	    $options = is_array($this->post['plugin_options']) ? $this->post['plugin_options'] : array();
+		if( isset($this->post['plugin_options']) && is_array($this->post['plugin_options']) ){
+			$options = $this->post['plugin_options'];
+		}else{
+			$options = array();
+		}
 		
 		$plugins = $this->getstate->execute(array('plugins' => array('type' => 'plugins', 'options' => $options)));
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
 		if(isset($plugins['result']['error'])){
@@ -302,11 +346,14 @@ class API
 	
 	public function editThemes()
 	{
-		$themes_info = is_array($this->post['themes_info']) ? $this->post['themes_info'] : array();
+		if( isset($this->post['themes_info']) && is_array($this->post['themes_info']) ){
+			$themes_info = $this->post['themes_info'];
+		}else{
+			$themes_info = array();
+		}
 		
 		$return = $this->getstate->execute(array('themes' => array('type' => 'edit_themes', 'options' => $themes_info)));
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
 		if(isset($return['result']['error'])){
@@ -320,11 +367,14 @@ class API
 	
 	public function editPlugins()
 	{
-		$plugins_info = is_array($this->post['plugins_info']) ? $this->post['plugins_info'] : array();
+		if( isset($this->post['plugins_info']) && is_array($this->post['plugins_info']) ){
+			$plugins_info = $this->post['plugins_info'];
+		}else{
+			$plugins_info = array();
+		}
 		
 		$return = $this->getstate->execute(array('plugins' => array('type' => 'edit_plugins', 'options' => $plugins_info)));
 		
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
 		if(isset($return['result']['error'])){
@@ -434,17 +484,11 @@ class API
 			return $this->output();
 		}
 		
-		if(function_exists('esc_attr')){
-			$oldurl = esc_attr(trim($this->post['oldurl']));
-			$newurl = esc_attr(trim($this->post['newurl']));
-		}else{
-			$oldurl = trim($this->post['oldurl']);
-			$newurl = trim($this->post['newurl']);
-		}
+		$oldurl = sanitize_key($this->post['oldurl']);
+		$newurl = sanitize_key($this->post['newurl']);
 		
 		$result = $this->context->update_urls($oldurl, $newurl);
 
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['result'] = $result;
 		return $this->output();
 	}
@@ -452,7 +496,6 @@ class API
 	public function getAllData()
 	{
 		$inCall = true;
-		$this->apioutput['username'] = $this->post['username'];
 		$this->apioutput['siteurl'] = $this->siteurl;
 		
 		$this->getSSLStatus($inCall);

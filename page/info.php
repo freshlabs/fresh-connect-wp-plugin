@@ -1,3 +1,1 @@
-<div class="test">
-	<p></p>
-</div>
+<div></div>
