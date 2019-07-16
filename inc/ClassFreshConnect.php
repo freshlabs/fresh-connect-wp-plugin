@@ -116,7 +116,7 @@ class Fresh_Connect_Admin {
 			);
 			
 			if( $current_user->user_login != $user_obj->user_login ){
-				$actions["delete"] = '<a href="'. esc_url($delete_url) .'" class="fc_delete_user_link">Delete</a>';
+				$actions["delete"] = '<a href="'. esc_url($delete_url) .'" class="fc_delete_user_link">'. esc_html('Delete', FRESH_TEXT_DOMAIN) .'</a>';
 			}
 		}
 		
@@ -139,7 +139,7 @@ class Fresh_Connect_Admin {
 	
 	public function fresh_action_links( $links ) {
 		$aboutus_link = admin_url().'admin.php?page=fresh-connect-aboutus';
-		$abt_link = '<a href="' . esc_url($aboutus_link) . '">About Us</a>';
+		$abt_link = '<a href="' . esc_url($aboutus_link) . '">'. esc_html('About Us', FRESH_TEXT_DOMAIN) .'</a>';
 		array_unshift($links, $abt_link);
 		
 		$deactivate_url =
@@ -152,7 +152,7 @@ class Fresh_Connect_Admin {
 			admin_url( 'plugins.php' )
 		);
 
-		$links["deactivate"] = '<a href="'. esc_url($deactivate_url) .'" class="fc_deactivate_link">Deactivate</a>';
+		$links["deactivate"] = '<a href="'. esc_url($deactivate_url) .'" class="fc_deactivate_link">'. esc_html('Deactivate', FRESH_TEXT_DOMAIN) .'</a>';
 		
 		return $links;
 	}
@@ -162,7 +162,7 @@ class Fresh_Connect_Admin {
 
 		if( $plugin_file_name == $this->plugin_file ) {
 			// you can still use array_unshift() to add links at the beginning
-			$links_array[] = '<a href="' . esc_url($support) . '" target="_blank">Support</a>';
+			$links_array[] = '<a href="' . esc_url($support) . '" target="_blank">'. esc_html('Support', FRESH_TEXT_DOMAIN) .'</a>';
 		}
 		
 		return $links_array;

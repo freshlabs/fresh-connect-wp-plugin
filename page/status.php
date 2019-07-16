@@ -4,9 +4,9 @@
         <h2 class="title"><?php esc_html_e('FastPress Connection Status', FRESH_TEXT_DOMAIN); ?></h2>
 		<p><?php printf( __('This page is for manually fixing the connection between FastPress and your website. This is typically only used by the FastPress support team - please do not enter anything on this page unless requested to do so. If you think the connection to your site is broken, please <a href="%s" target="_blank">Contact Support</a>', FRESH_TEXT_DOMAIN), esc_url( FRESH_CONNECT_PLUGIN_URL .'support' ) ); ?></p>
         <?php if($fastpress_status): ?>
-			<div class="fc-status-btn green"><?php esc_html_e('Connected'); ?></div>
+			<div class="fc-status-btn green"><?php esc_html_e('Connected', FRESH_TEXT_DOMAIN); ?></div>
         <?php else: ?>
-            <div class="fc-status-btn orange"><?php esc_html_e('Unknown'); ?></div>
+            <div class="fc-status-btn orange"><?php esc_html_e('Unknown', FRESH_TEXT_DOMAIN); ?></div>
         <?php endif; ?>
 	</div>
 	
