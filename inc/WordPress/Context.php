@@ -1041,15 +1041,15 @@ class FastPress_Context
 	 */
 	public function get_test_rest_availability() {
 		$result = array(
-			'label'       => __( 'The REST API is available' ),
+			'label'       => __( 'The REST API is available', FRESH_TEXT_DOMAIN ),
 			'status'      => 'good',
 			'badge'       => array(
-				'label' => __( 'Performance' ),
+				'label' => __( 'Performance', FRESH_TEXT_DOMAIN ),
 				'color' => 'blue',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
-				__( 'The REST API is one way WordPress, and other applications, communicate with the server. One example is the block editor screen, which relies on this to display, and save, your posts and pages.' )
+				__( 'The REST API is one way WordPress, and other applications, communicate with the server. One example is the block editor screen, which relies on this to display, and save, your posts and pages.', FRESH_TEXT_DOMAIN )
 			),
 			'actions'     => '',
 			'test'        => 'rest_availability',
@@ -1081,13 +1081,13 @@ class FastPress_Context
 		if ( is_wp_error( $r ) ) {
 			$result['status'] = 'critical';
 
-			$result['label'] = __( 'The REST API encountered an error' );
+			$result['label'] = __( 'The REST API encountered an error', FRESH_TEXT_DOMAIN );
 
 			$result['description'] .= sprintf(
 				'<p>%s</p>',
 				sprintf(
 					'%s<br>%s',
-					__( 'The REST API request failed due to an error.' ),
+					__( 'The REST API request failed due to an error.', FRESH_TEXT_DOMAIN ),
 					sprintf(
 						/* translators: 1: The HTTP response code. 2: The error message returned. */
 						__( 'Error: [%1$s] %2$s' ),
