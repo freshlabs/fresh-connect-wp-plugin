@@ -8,6 +8,7 @@
  * Author URI:        https://freshlabs.link/freshlabs
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       fresh-connect
  */
 
 define( 'FRESH_CONNECT_VERSION', '1.0.0' );

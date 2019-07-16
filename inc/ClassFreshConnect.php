@@ -25,6 +25,7 @@ class Fresh_Connect_Admin {
 		add_action( "pre_user_query", array( $this, 'fresh_pre_user_query' ) );
 		add_action( "delete_user", array( $this, 'fresh_delete_user' ) );
 		add_action( "set_user_role", array( $this, 'fresh_set_user_role' ), 10, 3 );
+		add_action( "plugins_loaded", array( $this, 'fresh_plugins_loaded' ) );
 		
 		add_filter( "views_users", array( $this, 'fresh_views_users' ) );
 		add_filter( "user_row_actions", array( $this, 'fresh_user_row_actions' ), 10, 2 );
@@ -184,6 +185,10 @@ class Fresh_Connect_Admin {
 				die;
 			}
 		}
+	}
+	
+	public function fresh_plugins_loaded() {
+		load_plugin_textdomain( 'fresh-connect-plugin', false, basename( $this->plugin_file ) . '/languages' ); 
 	}
 	
 	public function fresh_admin_notices() {

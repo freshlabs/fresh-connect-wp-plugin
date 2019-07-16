@@ -1,0 +1,788 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Fresh Connect\n"
+"POT-Creation-Date: 2019-07-16 15:51+0530\n"
+"PO-Revision-Date: 2019-07-16 15:52+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e;_n;_nx;_n_noop;_nx_noop;translate_nooped_plural;"
+"esc_html;esc_html__;esc_html_e;esc_attr;esc_attr__;esc_attr_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: inc/Api.php:580 inc/Api.php:621
+msgid "Auto-Optimize images with ShortPixel. Sign up for 150 free credits!"
+msgstr ""
+
+#: inc/AutoLogin.php:108
+msgid ""
+"The automatic login token is invalid. Please try again, or, if this keeps "
+"happening, contact support."
+msgstr ""
+
+#: inc/AutoLogin.php:110
+msgid ""
+"The automatic login token has expired. Please try again, or, if this keeps "
+"happening, contact support."
+msgstr ""
+
+#: inc/AutoLogin.php:112
+msgid ""
+"The automatic login token was already used. Please try again, or, if this "
+"keeps happening, contact support."
+msgstr ""
+
+#: inc/AutoLogin.php:124
+msgid ""
+"The automatic login token isn't properly signed. Please contact our support "
+"for help."
+msgstr ""
+
+#: inc/AutoLogin.php:128
+msgid ""
+"The automatic login token is invalid. Please check if this website is "
+"properly connected with your dashboard, or, if this keeps happening, contact "
+"support."
+msgstr ""
+
+#: inc/AutoLogin.php:134
+#, php-format
+msgid "User <strong>%s</strong> could not be found."
+msgstr ""
+
+#: inc/ClassFreshConnect.php:46
+msgid "Fresh Connect"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:47
+msgid "Connection Status"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:98
+msgid "All"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:120
+msgid "Delete"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:143
+msgid "About Us"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:156
+#: page/templates/display_deactivation_popup.php:12
+msgid "Deactivate"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:166
+msgid "Support"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:198
+msgid ""
+"It is not possible to change the role for this admin user as it is required "
+"for FastPress"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:204
+msgid ""
+"It is not possible to delete this admin user as it is required for FastPress"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:210
+msgid "Fresh connect key should be minimum 32 character long"
+msgstr ""
+
+#: inc/ClassFreshConnect.php:216
+msgid "Fresh connect key saved successfully"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:334
+msgid "Install Required Plugins"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:335
+msgid "Install Plugins"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:337
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:339
+#, php-format
+msgid "Updating Plugin: %s"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:340
+msgid "Something went wrong with the plugin API."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:343
+#, php-format
+msgid "Fresh Connect plugin requires the following plugin: %1$s."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:349
+#, php-format
+msgid "Fresh Connect plugin recommends the following plugin: %1$s."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:355
+#, php-format
+msgid ""
+"The following plugin needs to be updated to its latest version to ensure "
+"maximum compatibility with this plugin: %1$s."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:361
+#, php-format
+msgid "There is an update available for: %1$s."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:367
+#, php-format
+msgid "The following required plugin is currently inactive: %1$s."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:373
+#, php-format
+msgid "The following recommended plugin is currently inactive: %1$s."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:378
+msgid "Begin installing plugin"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:383
+msgid "Begin updating plugin"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:388
+msgid "Begin activating plugin"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:392
+msgid "Return to Required Plugins Installer"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:393
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:920
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2629
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3676
+msgid "Return to the Dashboard"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:394
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3255
+msgid "Plugin activated successfully."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:395
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3048
+msgid "The following plugin was activated successfully:"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:397
+#, php-format
+msgid "No action taken. Plugin %1$s was already active."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:399
+#, php-format
+msgid ""
+"Plugin not activated. A higher version of %s is needed for this plugin. "
+"Please update the plugin."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:401
+#, php-format
+msgid "All plugins installed and activated successfully. %1$s"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:402
+msgid "Dismiss this notice"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:403
+msgid ""
+"There are one or more required or recommended plugins to install, update or "
+"activate."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:404
+msgid "Please contact the administrator of this site for help."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:607
+msgid "This plugin needs to be updated to be compatible with your theme."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:608
+msgid "Update Required"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:725
+msgid "Set the parent_slug config variable instead."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:1027
+msgid ""
+"The remote plugin package does not contain a folder with the desired slug "
+"and renaming did not work."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:1027
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:1030
+msgid ""
+"Please contact the plugin provider and ask them to package their plugin "
+"according to the WordPress guidelines."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:1030
+msgid ""
+"The remote plugin package consists of more than one file, but the files are "
+"not packaged in a folder."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2078
+#, php-format
+msgid "TGMPA v%s"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2369
+msgid "Required"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2372
+msgid "Recommended"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2388
+msgid "WordPress Repository"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2391
+msgid "External Source"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2394
+msgid "Pre-Packaged"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2411
+msgid "Not Installed"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2415
+msgid "Installed But Not Activated"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2417
+msgid "Active"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2423
+msgid "Required Update not Available"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2426
+msgid "Requires Update"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2429
+msgid "Update recommended"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2484
+#, php-format
+msgid "All <span class=\"count\">(%s)</span>"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2488
+#, php-format
+msgid "To Install <span class=\"count\">(%s)</span>"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2492
+#, php-format
+msgid "Update Available <span class=\"count\">(%s)</span>"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2496
+#, php-format
+msgid "To Activate <span class=\"count\">(%s)</span>"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2586
+msgid "Installed version:"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2594
+msgid "Minimum required version:"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2606
+msgid "Available version:"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2629
+msgid "No plugins to install, update or activate."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2643
+msgid "Plugin"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2644
+msgid "Source"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2645
+msgid "Type"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2649
+msgid "Version"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2650
+msgid "Status"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2699
+#, php-format
+msgid "Install %2$s"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2704
+#, php-format
+msgid "Update %2$s"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2710
+#, php-format
+msgid "Activate %2$s"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2780
+msgid "Upgrade message from the plugin author:"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2813
+msgid "Install"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2819
+msgid "Update"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2822
+msgid "Activate"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2853
+msgid "No plugins were selected to be installed. No action taken."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2855
+msgid "No plugins were selected to be updated. No action taken."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2896
+msgid "No plugins are available to be installed at this time."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:2898
+msgid "No plugins are available to be updated at this time."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3004
+msgid "No plugins were selected to be activated. No action taken."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3030
+msgid "No plugins are available to be activated at this time."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3254
+msgid "Plugin activation failed."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3594
+#, php-format
+msgid "Updating Plugin %1$s (%2$d/%3$d)"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3597
+#, php-format
+msgid "An error occurred while installing %1$s: <strong>%2$s</strong>."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3599
+#, php-format
+msgid "The installation of %1$s failed."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3603
+msgid ""
+"The installation and activation process is starting. This process may take a "
+"while on some hosts, so please be patient."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3605
+#, php-format
+msgid "%1$s installed and activated successfully."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3605
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3613
+msgid "Show Details"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3605
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3613
+msgid "Hide Details"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3606
+msgid "All installations and activations have been completed."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3608
+#, php-format
+msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3611
+msgid ""
+"The installation process is starting. This process may take a while on some "
+"hosts, so please be patient."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3613
+#, php-format
+msgid "%1$s installed successfully."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3614
+msgid "All installations have been completed."
+msgstr ""
+
+#: inc/TGMLibrary/class-tgm-plugin-activation.php:3616
+#, php-format
+msgid "Installing Plugin %1$s (%2$d/%3$d)"
+msgstr ""
+
+#: inc/WordPress/Context.php:879
+msgid "Content Items (Posts, Pages, Custom Post Types, Revisions)"
+msgstr ""
+
+#: inc/WordPress/Context.php:880
+msgid "Excerpts"
+msgstr ""
+
+#: inc/WordPress/Context.php:881
+msgid "Attachments"
+msgstr ""
+
+#: inc/WordPress/Context.php:882
+msgid "Links"
+msgstr ""
+
+#: inc/WordPress/Context.php:883
+msgid "Custom Fields"
+msgstr ""
+
+#: inc/WordPress/Context.php:884
+msgid "Comments"
+msgstr ""
+
+#: inc/WordPress/Context.php:885
+msgid "Taxonomy"
+msgstr ""
+
+#: inc/WordPress/Context.php:886
+msgid "GUIDs"
+msgstr ""
+
+#: inc/WordPress/Context.php:1044
+msgid "The REST API is available"
+msgstr ""
+
+#: inc/WordPress/Context.php:1047
+msgid "Performance"
+msgstr ""
+
+#: inc/WordPress/Context.php:1052
+msgid ""
+"The REST API is one way WordPress, and other applications, communicate with "
+"the server. One example is the block editor screen, which relies on this to "
+"display, and save, your posts and pages."
+msgstr ""
+
+#: inc/WordPress/Context.php:1084
+msgid "The REST API encountered an error"
+msgstr ""
+
+#: inc/WordPress/Context.php:1090
+msgid "The REST API request failed due to an error."
+msgstr ""
+
+#: inc/WordPress/Context.php:1093
+#, php-format
+msgid "Error: [%1$s] %2$s"
+msgstr ""
+
+#: page/about-us.php:6
+msgid "What is FastPress?"
+msgstr ""
+
+#: page/about-us.php:7
+msgid ""
+"FastPress is a cutting edge cloud hosting platform for your WordPress "
+"websites."
+msgstr ""
+
+#: page/about-us.php:8
+msgid "But.. what does that mean for you?"
+msgstr ""
+
+#: page/about-us.php:11
+msgid "You save time creating, upgrading and managing your websites."
+msgstr ""
+
+#: page/about-us.php:12
+msgid ""
+"Your visitors get a faster loading website and your conversion rates increase"
+msgstr ""
+
+#: page/about-us.php:13
+msgid ""
+"Search Engines love your faster, more reliable websites meaning better "
+"rankings and more traffic"
+msgstr ""
+
+#: page/about-us.php:14
+msgid ""
+"You get all the crucial information at your fingertips, allowing you to "
+"effortlessly grow your websites"
+msgstr ""
+
+#: page/about-us.php:15
+msgid ""
+"You never have to worry about downtime, tricky upgrades or complicated "
+"servers again"
+msgstr ""
+
+#: page/about-us.php:16
+msgid ""
+"<strong>PLUS..</strong>  Just starting out? You can choose from a selection "
+"of our “Ready Made” websites in profitable niches, already packed with "
+"design and content."
+msgstr ""
+
+#: page/about-us.php:19
+#, php-format
+msgid ""
+"Not yet a FastPress member? <a href=\"%s\" target=\"_blank\">Join here and "
+"get started instantly</a>"
+msgstr ""
+
+#: page/about-us.php:27
+msgid "What does Fresh Connect do?"
+msgstr ""
+
+#: page/about-us.php:28
+msgid ""
+"Fresh Connect creates a super secure link between your website and your "
+"FastPress account. This allows you to do things like:"
+msgstr ""
+
+#: page/about-us.php:31
+msgid "Login to your website with a single click from your FastPress account"
+msgstr ""
+
+#: page/about-us.php:32
+msgid "See your website health directly in your FastPress account"
+msgstr ""
+
+#: page/about-us.php:33
+msgid "See your other FastPress websites inside your WordPress admin area"
+msgstr ""
+
+#: page/about-us.php:34
+msgid ""
+"Be notified of issue, plugin upgrades, WordPress upgrades etc. instantly"
+msgstr ""
+
+#: page/about-us.php:35
+msgid "Automate upgrades and common tasks"
+msgstr ""
+
+#: page/about-us.php:38
+msgid ""
+"The Fresh Connect plugin is installed automatically when you use FastPress. "
+"While the plugin is not required, we strongly recommend you use it to give "
+"you the extra benefits above."
+msgstr ""
+
+#: page/about-us.php:44
+msgid "What data is shared and how?"
+msgstr ""
+
+#: page/about-us.php:45
+msgid ""
+"We create a secure, industry standard link between your FastPress account "
+"and your WordPress website using Fresh Connect."
+msgstr ""
+
+#: page/about-us.php:47
+msgid ""
+"Your data is only visible in any form to you via your WordPress website and "
+"FastPress account area. We (Fresh Labs) do not access, share or otherwise "
+"use your data in any way."
+msgstr ""
+
+#: page/about-us.php:49
+#, php-format
+msgid ""
+"We take your privacy and security seriously. For more detailed information "
+"please see our <a href=\"%1$s\" target=\"_blank\">FastPress Privacy Policy</"
+"a> and <a href=\"%2$s\" target=\"_blank\">FastPress Terms of Use</a>"
+msgstr ""
+
+#: page/about-us.php:58
+msgid "Where can I ask a question and get help?"
+msgstr ""
+
+#: page/about-us.php:59
+msgid ""
+"There are several ways you can get help from the Fresh Labs team and our "
+"community of Fresh Members:"
+msgstr ""
+
+#: page/about-us.php:62
+#, php-format
+msgid ""
+"Check out our Facebook Mastermind Group, exclusively for members of Fresh "
+"Labs products like FastPress: <a href=\"%s\" target=\"_blank\">Join \"Fresh "
+"Mastermind\" Facebook Group</a>"
+msgstr ""
+
+#: page/about-us.php:63
+#, php-format
+msgid ""
+"We have a standalone \"Fresh Forum\" where you can ask questions, share your "
+"websites privately for feedback, search the history of questions and more: "
+"<a href=\"%s\">Join the Fresh Forum</a>"
+msgstr ""
+
+#: page/about-us.php:64
+#, php-format
+msgid ""
+"Our friendly support team have years of experience with WordPress and are "
+"always on hand to help you out: <a href=\"%s\">Contact the Fresh Support "
+"Team</a>"
+msgstr ""
+
+#: page/main-page.php:2
+msgid "Welcome to the Fresh Connect"
+msgstr ""
+
+#: page/main-page.php:3
+msgid ""
+"The Fresh Connect Plugin connects your WordPress blog with the FastPress "
+"cloud hosting platform."
+msgstr ""
+
+#: page/main-page.php:5
+msgid ""
+"This gives you many powerful features including one click login (no more "
+"frustration losing passwords!) and powerful statistics that you can use to "
+"drive your website forward."
+msgstr ""
+
+#: page/main-page.php:16
+msgid "fresh-connect-aboutus"
+msgstr ""
+
+#: page/main-page.php:16
+msgid "About this Plugin"
+msgstr ""
+
+#: page/status.php:4
+msgid "FastPress Connection Status"
+msgstr ""
+
+#: page/status.php:5
+#, php-format
+msgid ""
+"This page is for manually fixing the connection between FastPress and your "
+"website. This is typically only used by the FastPress support team - please "
+"do not enter anything on this page unless requested to do so. If you think "
+"the connection to your site is broken, please <a href=\"%s\" target=\"_blank"
+"\">Contact Support</a>"
+msgstr ""
+
+#: page/status.php:7
+msgid "Connected"
+msgstr ""
+
+#: page/status.php:9
+msgid "Unknown"
+msgstr ""
+
+#: page/status.php:14
+msgid "Update the Fresh Connect Key"
+msgstr ""
+
+#: page/status.php:15
+msgid ""
+"Please note this is for the support team to use only. Don't proceed unless "
+"you have been instructed to do so."
+msgstr ""
+
+#: page/status.php:18
+msgid "Enter the Fresh Connect Key:"
+msgstr ""
+
+#: page/status.php:20
+msgid "Save the New Key"
+msgstr ""
+
+#: page/templates/display_deactivation_popup.php:6
+msgid "warning"
+msgstr ""
+
+#: page/templates/display_deactivation_popup.php:8
+msgid ""
+"The Fresh Connect plugin provides a secure connection between your FastPress "
+"account and your website. Disabling this plugin will remove key features "
+"such as one click login."
+msgstr ""
+
+#: page/templates/display_deactivation_popup.php:9
+msgid ""
+"For more information on what this plugin does, please read the \"About this "
+"Plugin\" page on the left menu."
+msgstr ""
+
+#: page/templates/display_deactivation_popup.php:11
+msgid "Keep Activated"
+msgstr ""
+
+#: uninstall.php:7
+msgid ""
+"The Fresh Connect plugin provides a secure connection between your FastPress "
+"account and your website. You can not delete this plugin. If you need any "
+"help, please contact the Fresh Team for support"
+msgstr ""
