@@ -1,6 +1,6 @@
 === Fresh Connect by Fresh Labs ===
 Contributors: careybaird
-Tags: fresh connect, about us, fastpress
+Tags: cloud, wordpress, wordpress hosting, cloud hosting
 Requires at least: 5.1
 Tested up to: 5.2.2
 Stable tag: 1.0

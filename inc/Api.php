@@ -13,6 +13,7 @@ class API
 	private $siteurl;
 	private $wp_version;
 	private $userdata;
+	private $username;
 	private $error = false;
 	private $post = array();
 	
@@ -45,28 +46,26 @@ class API
 		$this->post = $parameters;
 		
 		if( isset($this->post['username']) && !empty($this->post['username']) ){
-			$username = sanitize_user($this->post['username']);
+			$this->username = sanitize_user($this->post['username']);
 		}else{
-			$username = null;
+			$this->username = null;
 		}
 		
-		if ( ! username_exists( $username ) ){
+		if ( ! username_exists( $this->username ) ){
 			$users = get_users(array('role' => 'administrator', 'number' => 1, 'orderby' => 'ID'));
 			
             if (empty($users[0]->user_login)) {
-                $this->error = true;
-				$this->errormessage = 'We could not find an administrator user to use. Please contact support.';
-				return $this->output();
-            }
-			
-            $username = $users[0]->user_login;
+                $this->username = get_option('fp_main_username');
+            }else{
+				$this->username = $users[0]->user_login;
+			}
 		}
 		
-		$userdata = get_user_by('login', $username);
+		$userdata = get_user_by('login', $this->username);
 		
 		if(!in_array('administrator', $userdata->roles)){
 			$this->error = true;
-			$this->errormessage = "User {$username} have not required permission to access the data.";
+			$this->errormessage = "User {$this->username} have not required permission to access the data.";
 			return $this->output();
 		}
 		
@@ -292,6 +291,50 @@ class API
 
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
+		return $this->output();
+	}
+	
+	public function createAdminUser()
+	{	
+		if( empty($this->post['username']) ){
+			$this->error = true;
+			$this->errormessage = 'user name is empty';
+			return $this->output();
+		}
+		
+		$user_name = sanitize_user($this->post['username']);
+		$user_email = '';
+		
+		if( isset($this->post['useremail']) && !empty($this->post['useremail']) ){
+			$user_email = sanitize_email($this->post['useremail']);
+			if( email_exists($user_email) == true ){
+				$this->error = true;
+				$this->errormessage = 'user email is already exist.';
+				return $this->output();
+			}
+		}
+		
+		$user_id = username_exists( $user_name );
+		if ( !$user_id ) {
+			$random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
+			
+			$user_id = wp_create_user( $user_name, $random_password, $user_email);
+			if ( is_int($user_id) )
+			{
+				$wp_user_object = new WP_User($user_id);
+				$wp_user_object->set_role('administrator');
+				
+				$this->apioutput['result'] = array('user_id' => $user_id, 'user_name' => $user_name);
+			}else{
+				$this->error = true;
+				$this->errormessage = 'Problem in creating a new user.';
+			}
+			
+		} else {
+			$this->error = true;
+			$this->errormessage = 'user name is already exist.';
+		}
+		
 		return $this->output();
 	}
 	

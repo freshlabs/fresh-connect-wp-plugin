@@ -43,7 +43,7 @@ class Fresh_Connect_Admin {
     }
 	
 	public function fresh_admin_menu() {
-		add_menu_page( __( 'Fresh Connect', FRESH_TEXT_DOMAIN ), 'Fresh Connect', 'manage_options', 'fresh-connect-aboutus', array($this, 'main_menu_page'), 'dashicons-menu', 4 ); 
+		add_menu_page( __( 'Fresh Connect', FRESH_TEXT_DOMAIN ), 'Fresh Connect', 'manage_options', 'fresh-connect-aboutus', array($this, 'main_menu_page'), FRESH_CONNECT_URL_PATH . 'assets/images/icon3.png', 4 ); 
 		add_submenu_page( 'fresh-connect-aboutus', 'Fresh Connect', __('Connection Status', FRESH_TEXT_DOMAIN), 'manage_options', 'fresh-connect-status', array($this, 'connection_status_page') );
 	}
 	

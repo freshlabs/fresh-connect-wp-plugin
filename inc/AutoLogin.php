@@ -94,6 +94,7 @@ class FS_Autologin
             }
             
             update_option('fp_connection_status', true);
+			update_option('fp_main_username', $username);
 
 			wp_redirect($redirectUri);
             return;
@@ -147,6 +148,7 @@ class FS_Autologin
         $this->context->setCookie($this->getCookieName(), '1');
 
         update_option('fp_connection_status', true);
+		update_option('fp_main_username', $username);
 
 		wp_redirect($redirectUri);
     }
