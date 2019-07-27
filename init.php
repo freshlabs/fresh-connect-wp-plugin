@@ -3,7 +3,7 @@
  * Plugin Name:       Fresh Connect
  * Plugin URI:        https://freshlabs.link/freshconnect
  * Description:       The Fresh Connect plugin connects your blog with the FastPress cloud hosting platform, allowing 1 click logins and powerful statistics. Please see the about page for more information.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Fresh Labs
  * Author URI:        https://freshlabs.link/freshlabs
  * License:           GPL-2.0+
@@ -11,7 +11,7 @@
  * Text Domain:       fresh-connect
  */
 
-define( 'FRESH_CONNECT_VERSION', '1.0.0' );
+define( 'FRESH_CONNECT_VERSION', '1.1.0' );
 define( 'FRESH_TEXT_DOMAIN', 'fresh-connect' );
 define( 'FRESH_CONNECT_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FRESH_CONNECT_URL_PATH', plugin_dir_url( __FILE__ ) );

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Fresh Connect\n"
-"POT-Creation-Date: 2019-07-16 15:51+0530\n"
-"PO-Revision-Date: 2019-07-16 15:52+0530\n"
+"POT-Creation-Date: 2019-07-26 12:06+0530\n"
+"PO-Revision-Date: 2019-07-26 12:06+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -16,42 +16,42 @@ msgstr ""
 "esc_html;esc_html__;esc_html_e;esc_attr;esc_attr__;esc_attr_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: inc/Api.php:580 inc/Api.php:621
+#: inc/Api.php:623 inc/Api.php:664
 msgid "Auto-Optimize images with ShortPixel. Sign up for 150 free credits!"
 msgstr ""
 
-#: inc/AutoLogin.php:108
+#: inc/AutoLogin.php:109
 msgid ""
 "The automatic login token is invalid. Please try again, or, if this keeps "
 "happening, contact support."
 msgstr ""
 
-#: inc/AutoLogin.php:110
+#: inc/AutoLogin.php:111
 msgid ""
 "The automatic login token has expired. Please try again, or, if this keeps "
 "happening, contact support."
 msgstr ""
 
-#: inc/AutoLogin.php:112
+#: inc/AutoLogin.php:113
 msgid ""
 "The automatic login token was already used. Please try again, or, if this "
 "keeps happening, contact support."
 msgstr ""
 
-#: inc/AutoLogin.php:124
+#: inc/AutoLogin.php:125
 msgid ""
 "The automatic login token isn't properly signed. Please contact our support "
 "for help."
 msgstr ""
 
-#: inc/AutoLogin.php:128
+#: inc/AutoLogin.php:129
 msgid ""
 "The automatic login token is invalid. Please check if this website is "
 "properly connected with your dashboard, or, if this keeps happening, contact "
 "support."
 msgstr ""
 
-#: inc/AutoLogin.php:134
+#: inc/AutoLogin.php:135
 #, php-format
 msgid "User <strong>%s</strong> could not be found."
 msgstr ""
