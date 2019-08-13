@@ -12,17 +12,28 @@ Connects your blog with the FastPress cloud hosting platform
 
 == Description ==
 
-The Fresh Connect plugin connects your blog with the FastPress cloud hosting platform, allowing 1 click logins and powerful statistics.
+The Fresh Connect plugin connects your WordPress website with the [FastPress cloud hosting platform](https://freshlabs.link/fastpress "FastPress cloud hosting"), allowing 1 click logins and powerful statistics.
+
+Some of the features of FastPress include:
+
+* Create fully cloud hosted websites in a few clicks
+* Choose a "Ready Made" website in many niches with content, design etc. already included
+* "Hands Free" import your existing websites, done by our team and 100% working
+* One click logins to your WP Admin area
+* Full page loading speed monitoring and reports
 
 Fresh Connect creates a super secure link between your website and your FastPress account. This allows you to do things like:
 
 * Login to your website with a single click from your FastPress account
-* See your website health directly in your FastPress account
-* See your other FastPress websites inside your WordPress admin area
-* Be notified of issue, plugin upgrades, WordPress upgrades etc. instantly
-* Automate upgrades and common tasks
+* Monitor and record page load speed automatically
+* See your website health & speed reports directly in your FastPress account
+* Be notified of issues, plugin upgrades, WordPress upgrades etc. instantly Automate upgrades and common tasks
 
 The Fresh Connect plugin is installed automatically when you use FastPress. While the plugin is not required, we strongly recommend you use it to give you the extra benefits above.
+
+For support with the Fresh Connect plugin or FastPress, please [contact our helpdesk](https://freshlabs.link/fastpress "helpdesk")
+
+To see the Terms of Use for FastPress and Fresh Connect [please see our Terms of Use page here](https://freshlabs.link/fastpress-terms "Terms").
 
 == Installation ==
 
@@ -40,11 +51,11 @@ After downloading the ZIP file of the Fresh Connect plugin,
 
 = Where can I ask a question and get help? =
 
-* Check out our Facebook Mastermind Group, exclusively for members of Fresh Labs products like FastPress: <a href="https://freshlabs.link/fresh-mastermind">Join “Fresh Mastermind” Facebook Group</a>
+* Check out our Facebook Mastermind Group, exclusively for members of Fresh Labs products like FastPress: [Join “Fresh Mastermind” Facebook Group](https://freshlabs.link/fresh-mastermind "Fresh Mastermind")
 
-* We have a standalone “Fresh Forum” where you can ask questions, share your websites privately for feedback, search the history of questions and more: <a href="https://freshlabs.link/forum">Join the Fresh Forum</a>
+* We have a standalone “Fresh Forum” where you can ask questions, share your websites privately for feedback, search the history of questions and more: [Join the Fresh Forum](https://freshlabs.link/forum "Fresh Forum")
 
-* Our friendly support team have years of experience with WordPress and are always on hand to help you out: <a href="http://freshlabs.link/support">Contact the Fresh Support Team</a>
+* Our friendly support team have years of experience with WordPress and are always on hand to help you out: [Contact the Fresh Support Team](http://freshlabs.link/support "Fresh Support Team")
 
 
 == Changelog ==
@@ -55,3 +66,6 @@ After downloading the ZIP file of the Fresh Connect plugin,
 = 1.1.0 =
 * Added the plugin banner image and icon to improve wordpress repository
 * Added the Create admin user api method for FastPress.
+
+= 1.1.1 =
+* Store the Google PageSpeed data in the WP site on daily basis via wp-cron.
