@@ -13,6 +13,7 @@ class API
 	private $siteurl;
 	private $wp_version;
 	private $userdata;
+	private $username;
 	private $error = false;
 	private $post = array();
 	
@@ -45,28 +46,26 @@ class API
 		$this->post = $parameters;
 		
 		if( isset($this->post['username']) && !empty($this->post['username']) ){
-			$username = sanitize_user($this->post['username']);
+			$this->username = sanitize_user($this->post['username']);
 		}else{
-			$username = null;
+			$this->username = null;
 		}
 		
-		if ( ! username_exists( $username ) ){
+		if ( ! username_exists( $this->username ) ){
 			$users = get_users(array('role' => 'administrator', 'number' => 1, 'orderby' => 'ID'));
 			
             if (empty($users[0]->user_login)) {
-                $this->error = true;
-				$this->errormessage = 'We could not find an administrator user to use. Please contact support.';
-				return $this->output();
-            }
-			
-            $username = $users[0]->user_login;
+                $this->username = get_option('fp_main_username');
+            }else{
+				$this->username = $users[0]->user_login;
+			}
 		}
 		
-		$userdata = get_user_by('login', $username);
+		$userdata = get_user_by('login', $this->username);
 		
 		if(!in_array('administrator', $userdata->roles)){
 			$this->error = true;
-			$this->errormessage = "User {$username} have not required permission to access the data.";
+			$this->errormessage = "User {$this->username} have not required permission to access the data.";
 			return $this->output();
 		}
 		
@@ -292,6 +291,50 @@ class API
 
 		$this->apioutput['siteurl'] = $this->siteurl;
 		$this->apioutput['wp_version'] = $this->wp_version;
+		return $this->output();
+	}
+	
+	public function createAdminUser()
+	{	
+		if( empty($this->post['username']) ){
+			$this->error = true;
+			$this->errormessage = 'user name is empty';
+			return $this->output();
+		}
+		
+		$user_name = sanitize_user($this->post['username']);
+		$user_email = '';
+		
+		if( isset($this->post['useremail']) && !empty($this->post['useremail']) ){
+			$user_email = sanitize_email($this->post['useremail']);
+			if( email_exists($user_email) == true ){
+				$this->error = true;
+				$this->errormessage = 'user email is already exist.';
+				return $this->output();
+			}
+		}
+		
+		$user_id = username_exists( $user_name );
+		if ( !$user_id ) {
+			$random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
+			
+			$user_id = wp_create_user( $user_name, $random_password, $user_email);
+			if ( is_int($user_id) )
+			{
+				$wp_user_object = new WP_User($user_id);
+				$wp_user_object->set_role('administrator');
+				
+				$this->apioutput['result'] = array('user_id' => $user_id, 'user_name' => $user_name);
+			}else{
+				$this->error = true;
+				$this->errormessage = 'Problem in creating a new user.';
+			}
+			
+		} else {
+			$this->error = true;
+			$this->errormessage = 'user name is already exist.';
+		}
+		
 		return $this->output();
 	}
 	
@@ -644,4 +687,155 @@ class API
         
         return $this->output();  
     }
+	
+	public function getPageSpeedReports() 
+    {
+		if(empty($this->post['start_date'])){
+			$this->error = true;
+			$this->errormessage = 'Start Date is empty.';
+			return $this->output();
+		}
+ 
+		if(empty($this->post['end_date'])){
+			$this->error = true;
+			$this->errormessage = 'End Date is empty.';
+			return $this->output();
+		} 
+
+		$startDate = sanitize_text_field($this->post['start_date']);
+		$endDate = sanitize_text_field($this->post['end_date']); 
+ 
+		$sDate = strtotime($this->post['start_date']);
+		$eDate = strtotime($this->post['end_date']);  
+		
+		$datediff = $eDate-$sDate; 
+		$CountDay = round($datediff / (60 * 60 * 24)); 
+		 
+		global $wpdb; 
+		$fresh_page_stats	= $wpdb->prefix . 'fresh_page_stats';
+		$fresh_page_reports = $wpdb->prefix . 'fresh_page_reports';
+		
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        if ( is_plugin_active( 'google-pagespeed-insights/google-pagespeed-insights.php' ) ) { 
+			$reportData = array(); 
+			$summary_reports = $desktop_summary_reports = $mobile_summary_reports = array(); 
+			for($i=$CountDay; $i>=0; $i--){  
+				 
+				$targetDate = date('Y-m-d' , strtotime("-".$i." days", strtotime($endDate)));
+				 
+				 $report_list = $wpdb->get_results("SELECT `URL`, `desktop_score`, `mobile_score`, `type`, `desktop_last_modified`, `mobile_last_modified`, `created_on` FROM $fresh_page_stats WHERE created_on like '%".$targetDate."%'", ARRAY_A);
+ 
+				$desktop_score = $mobile_score = $pages = 0;
+			 
+
+				if($report_list){
+					$pages = count( $report_list );
+					foreach( $report_list as $list ){
+ 
+						$desktop_score += $list['desktop_score'];
+						$mobile_score += $list['mobile_score'];
+					}
+				}
+			
+				if($pages > 0){
+					$desktop_score = round( $desktop_score / $pages );
+					$mobile_score = round( $mobile_score / $pages );
+				}
+			
+            
+				// Desktop 
+				$all_page_reports = $wpdb->get_results( $wpdb->prepare(
+					"
+						SELECT r.rule_key, r.rule_name, r.rule_score
+						FROM $fresh_page_stats as s
+						INNER JOIN $fresh_page_reports as r
+							ON r.page_id = s.ID
+							AND r.strategy = %s
+							AND r.rule_type = %s
+							AND r.rule_score < .9
+						WHERE s.desktop_score IS NOT NULL AND s.created_on like '%".$targetDate."%' ORDER BY r.rule_score DESC
+					",
+					'desktop',
+					'opportunity'
+				), ARRAY_A );
+
+
+				if ( $all_page_reports ) {
+					foreach ( $all_page_reports as $page_report ) {
+						if ( isset( $summary_reports[ $page_report['rule_key'] ] ) ) {
+							$summary_reports[ $page_report['rule_key'] ]['avg_score'] += $page_report['rule_score'];
+							$summary_reports[ $page_report['rule_key'] ]['occurances']++;
+						} else { 
+							$summary_reports[ $page_report['rule_key'] ] = array(
+								'rule_name'		=> ( 'uses-optimized-images' != $page_report['rule_key'] ) ? $page_report['rule_name'] : $page_report['rule_name'] . '<span class="shortpixel_blurb"> &ndash; <a href="https://shortpixel.com/h/af/PCFTWNN142247" target="_blank">' . __( 'Auto-Optimize images with ShortPixel. Sign up for 150 free credits!', 'gpagespeedi') . '</a></span>',
+								'avg_score'		=> $page_report['rule_score'],
+								'occurances'	=> 1
+							); 
+						}   
+					}
+			  
+					foreach ( $summary_reports as &$summary_report ) {
+						$summary_report['avg_score'] = round( $summary_report['avg_score'] / $summary_report['occurances'], 2 );
+						$summary_report['avg_score'] = $summary_report['avg_score'] * 100;
+					}
+		
+					$desktop_summary_reports = $this->sort_array( $summary_reports, 'avg_score' );
+				}
+
+				// Mobile 
+				$all_page_reports = $wpdb->get_results( $wpdb->prepare(
+					"
+						SELECT r.rule_key, r.rule_name, r.rule_score
+						FROM $fresh_page_stats as s
+						INNER JOIN $fresh_page_reports as r
+							ON r.page_id = s.ID
+							AND r.strategy = %s
+							AND r.rule_type = %s
+							AND r.rule_score < .9
+						WHERE s.mobile_score IS NOT NULL AND s.created_on like '%".$targetDate."%'
+						ORDER BY r.rule_score DESC
+					",
+					'mobile',
+					'opportunity'
+				), ARRAY_A ); 
+            
+				$summary_reports = array();
+
+				if ( $all_page_reports ) {
+					foreach ( $all_page_reports as $page_report ) {
+						if ( isset( $summary_reports[ $page_report['rule_key'] ] ) ) {
+							$summary_reports[ $page_report['rule_key'] ]['avg_score'] += $page_report['rule_score'];
+							$summary_reports[ $page_report['rule_key'] ]['occurances']++;
+						} else {
+							$summary_reports[ $page_report['rule_key'] ] = array(
+								'rule_name'		=> ( 'uses-optimized-images' != $page_report['rule_key'] ) ? $page_report['rule_name'] : $page_report['rule_name'] . '<span class="shortpixel_blurb"> &ndash; <a href="https://shortpixel.com/h/af/PCFTWNN142247" target="_blank">' . __( 'Auto-Optimize images with ShortPixel. Sign up for 150 free credits!', 'gpagespeedi') . '</a></span>',
+								'avg_score'		=> $page_report['rule_score'],
+								'occurances'	=> 1
+							);
+						}
+					}
+ 
+					foreach ( $summary_reports as &$summary_report ) {
+						$summary_report['avg_score'] = round( $summary_report['avg_score'] / $summary_report['occurances'], 2 );
+						$summary_report['avg_score'] = $summary_report['avg_score'] * 100;
+					}
+		
+					$mobile_summary_reports = $this->sort_array( $summary_reports, 'avg_score' );
+				}
+
+            $data = array('report_list' => $report_list, 'avg_desktop_score' => $desktop_score, 'avg_mobile_score' => $mobile_score, 'improvement_area_desktop' => $desktop_summary_reports, 'improvement_area_mobile' => $mobile_summary_reports); 
+				
+			array_push($reportData , $data);
+			  
+			}
+			$this->apioutput['result'] = $reportData;
+		}
+        else{ 
+            $this->error = true;
+            $this->errormessage = 'Google Pagespeed Insights Plugin is not active';
+        } 
+		return $this->output();  
+    }
+	
+	
 }

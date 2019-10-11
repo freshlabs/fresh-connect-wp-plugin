@@ -3,7 +3,7 @@
  * Plugin Name:       Fresh Connect
  * Plugin URI:        https://freshlabs.link/freshconnect
  * Description:       The Fresh Connect plugin connects your blog with the FastPress cloud hosting platform, allowing 1 click logins and powerful statistics. Please see the about page for more information.
- * Version:           1.0.0
+ * Version:           1.1.1
  * Author:            Fresh Labs
  * Author URI:        https://freshlabs.link/freshlabs
  * License:           GPL-2.0+
@@ -11,7 +11,7 @@
  * Text Domain:       fresh-connect
  */
 
-define( 'FRESH_CONNECT_VERSION', '1.0.0' );
+define( 'FRESH_CONNECT_VERSION', '1.1.1' );
 define( 'FRESH_TEXT_DOMAIN', 'fresh-connect' );
 define( 'FRESH_CONNECT_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FRESH_CONNECT_URL_PATH', plugin_dir_url( __FILE__ ) );
@@ -61,7 +61,60 @@ function fp_setup_plugin() {
 		$connection_key = fp_generate_uuid4();
 		update_option( 'fp_connection_keys', $connection_key );
     }
+	fp_create_table();
+	
 }
+function fp_create_table(){
+	global $wpdb;
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+	$fresh_page_stats_table	= $wpdb->prefix . 'fresh_page_stats';
+	$fresh_page_reports_table = $wpdb->prefix . 'fresh_page_reports'; 
+
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$fresh_page_stats = "CREATE TABLE $fresh_page_stats_table (
+		ID bigint(20) NOT NULL AUTO_INCREMENT,
+		URL text NULL,
+		response_code int(10) DEFAULT NULL,
+		desktop_score int(10) DEFAULT NULL,
+		mobile_score int(10) DEFAULT NULL,
+		desktop_lab_data longtext,
+		mobile_lab_data longtext,
+		desktop_field_data longtext,
+		mobile_field_data longtext,
+		type varchar(200) DEFAULT NULL,
+		object_id bigint(20) DEFAULT NULL,
+		term_id bigint(20) DEFAULT NULL,
+		custom_id bigint(20) DEFAULT NULL,
+		desktop_last_modified varchar(20) NOT NULL,
+		mobile_last_modified varchar(20) NOT NULL,
+		force_recheck int(1) NOT NULL,
+		created_on datetime NOT NULL,
+		PRIMARY KEY  (ID),
+		KEY object_id (object_id),
+		KEY term_id (term_id),
+		KEY custom_id (custom_id)
+	) $charset_collate;";
+
+	$fresh_page_reports = "CREATE TABLE $fresh_page_reports_table (
+		ID bigint(20) NOT NULL AUTO_INCREMENT,
+		page_id bigint(20) NOT NULL,
+		strategy varchar(20) NOT NULL,
+		rule_key varchar(200) NOT NULL,
+		rule_name varchar(200) DEFAULT NULL,
+		rule_type varchar(200) DEFAULT NULL,
+		rule_score decimal(5,2) DEFAULT NULL,
+		rule_blocks longtext,
+		PRIMARY KEY  (ID),
+		KEY page_id (page_id)
+	) $charset_collate;";
+ 
+	dbDelta( $fresh_page_stats );
+	dbDelta( $fresh_page_reports );
+}
+
 
 function fp_disable_plugin() {
 	update_option('fresh_connect_status', 0);
