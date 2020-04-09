@@ -340,8 +340,8 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 				'oops'                            => __( 'Something went wrong with the plugin API.', 'tgmpa' ),
 				'notice_can_install_required'     => _n_noop(
 					/* translators: 1: plugin name(s). */
-					'Fresh Connect plugin requires the following plugin: %1$s.',
-					'Fresh Connect plugin requires the following plugins: %1$s.',
+					'Your currently installed themes or plugins require the following plugin: %1$s.',
+					'Your currently installed themes or plugins require the following plugins: %1$s.',
 					'tgmpa'
 				),
 				'notice_can_install_recommended'  => _n_noop(

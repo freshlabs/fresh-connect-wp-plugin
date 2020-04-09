@@ -2,7 +2,7 @@
 Contributors: careybaird
 Tags: cloud, wordpress, wordpress hosting, cloud hosting
 Requires at least: 5.1
-Tested up to: 5.2.2
+Tested up to: 5.4
 Stable tag: 1.1.0
 Requires PHP: 7.1
 License: GPLv2 or later
@@ -69,3 +69,7 @@ After downloading the ZIP file of the Fresh Connect plugin,
 
 = 1.1.1 =
 * Store the Google PageSpeed data in the WP site on daily basis via wp-cron.
+
+= 1.2.0 =
+* Added setting for helpdesk beacon.
+* Activity log table added.

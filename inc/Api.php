@@ -124,7 +124,7 @@ class API
         {
             $this->apioutput['status'] = 'success';
         }
-
+        $this->pluginLogsIntoDB($this->apioutput);
 		return $this->apioutput;
 	}
 	
@@ -836,6 +836,22 @@ class API
         } 
 		return $this->output();  
     }
-	
+
+
+	public function pluginLogsIntoDB($apioutput) {
+	 	global $wpdb;
+
+		$fresh_connect_requests_log_table	= $wpdb->prefix . 'fresh_connect_requests_log';
+
+		$requestLogData = array(); 
+		$requestLogData['activity_type'] = 'api-'. ($this->post['request_method']);
+		$requestLogData['request_status'] = $apioutput['status'];
+		$requestLogData['response_message'] = $apioutput['errormessage'];
+		$this->post['hash'] = "Removed for Security";
+		$requestLogData['request_parameters'] = json_encode($this->post);
+
+		$wpdb->insert($fresh_connect_requests_log_table, $requestLogData);  
+		
+	}
 	
 }

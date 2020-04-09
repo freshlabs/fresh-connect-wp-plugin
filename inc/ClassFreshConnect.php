@@ -31,6 +31,8 @@ class Fresh_Connect_Admin {
 		add_filter( "user_row_actions", array( $this, 'fresh_user_row_actions' ), 10, 2 );
 		add_filter( "plugin_action_links_{$this->plugin_file}", array( $this, 'fresh_action_links' ) );
 		add_filter( "plugin_row_meta", array( $this, 'fresh_row_meta' ), 10, 4 );
+		add_action("admin_init", array( $this, 'fresh_connect_settings_page_content' ));
+
     }
  
     public function enqueue_styles() {
@@ -43,12 +45,11 @@ class Fresh_Connect_Admin {
     }
 	
 	public function fresh_admin_menu() {
-		add_menu_page( __( 'Fresh Connect', FRESH_TEXT_DOMAIN ), 'Fresh Connect', 'manage_options', 'fresh-connect-aboutus', array($this, 'main_menu_page'), FRESH_CONNECT_URL_PATH.'assets/images/icon3.png', 4 ); 
-		add_submenu_page( 'fresh-connect-aboutus', 'Fresh Connect', __('Connection Status', FRESH_TEXT_DOMAIN), 'manage_options', 'fresh-connect-status', array($this, 'connection_status_page') );
-	}
-	
-	public function main_menu_page() {
-		include( FRESH_CONNECT_DIR_PATH . 'page/main-page.php' );
+		add_menu_page( __( 'Fresh Connect', FRESH_TEXT_DOMAIN ), 'Fresh Connect', 'manage_options', 'fresh-connect-aboutus', array($this, 'main_menu_page'), FRESH_CONNECT_URL_PATH.'assets/images/icon3.png', 99 ); 
+		add_submenu_page('fresh-connect-aboutus', __('Fresh Connect', FRESH_TEXT_DOMAIN), __('What is this?', FRESH_TEXT_DOMAIN), 'manage_options', 'fresh-connect-aboutus' );
+		add_submenu_page( 'fresh-connect-aboutus', __('Fresh Connect', FRESH_TEXT_DOMAIN), __('Connection Status', FRESH_TEXT_DOMAIN), 'manage_options', 'fresh-connect-status', array($this, 'connection_status_page') );
+		add_submenu_page( 'fresh-connect-aboutus', __('Fresh Connect', FRESH_TEXT_DOMAIN), __('Activity Log', FRESH_TEXT_DOMAIN), 'manage_options', 'fresh-connect-settings', array($this, 'fresh_connect_activity_log_markup') );
+		add_submenu_page( 'fresh-connect-aboutus', __('Fresh Connect', FRESH_TEXT_DOMAIN), __('Settings', FRESH_TEXT_DOMAIN), 'manage_options', 'fresh-connect-activity-log', array($this, 'fresh_connect_settings_markup') );
 	}
 	
 	public function connection_status_page() {
@@ -68,6 +69,73 @@ class Fresh_Connect_Admin {
         }
 		include( FRESH_CONNECT_DIR_PATH . 'page/status.php' );
 	}
+
+	public function fresh_connect_settings_page_content(){
+	    add_settings_section("fresh_connect_settings_section", __("Fresh Connect Settings", FRESH_TEXT_DOMAIN), null, "fresh_connect_settings_page");
+	    add_settings_field("fresh_connect_help", "Enable Help?", array($this,"fresh_connect_settings_checkbox"), "fresh_connect_settings_page", "fresh_connect_settings_section");  
+	    register_setting("fresh_connect_settings_section", "fresh_connect_help");
+	}
+
+	public function fresh_connect_settings_checkbox(){
+	   ?>
+	        <input type="checkbox" name="fresh_connect_help" value="1" <?php checked(1, get_option('fresh_connect_help'), true); ?> />
+	        <span><?php _e('Use this option to turn on or off the help icon which gives you access to help articles and live chat. The icon appears in the bottom right corner of your WordPress admin area.', FRESH_TEXT_DOMAIN); ?></span>
+	   <?php
+	}
+
+
+	public function fresh_connect_settings_markup(){
+	  ?>
+	      <div class="wrap">
+	         <form method="post" action="options.php">
+	            <?php
+	               settings_fields("fresh_connect_settings_section");
+	 
+	               do_settings_sections("fresh_connect_settings_page");
+	                 
+	               submit_button();
+	            ?>
+	         </form>
+	      </div>
+	   <?php
+	}
+
+	public function fresh_connect_activity_log_markup(){
+		global $wpdb;
+		
+		$fresh_connect_requests_log_table = $wpdb->prefix . 'fresh_connect_requests_log'; 
+
+		$customPagHTML     = "";
+		$query             = "SELECT * FROM ". $fresh_connect_requests_log_table;
+		$total_query       = "SELECT COUNT(1) FROM (${query}) AS combined_table";
+		$total             = $wpdb->get_var( $total_query );
+		$items_per_page    = 100;
+		$page              = isset( $_GET['cpage'] ) ? abs( (int) $_GET['cpage'] ) : 1;
+		$offset            = ( $page * $items_per_page ) - $items_per_page;
+		$requests_log      = $wpdb->get_results( $query . " LIMIT ${offset}, ${items_per_page}", ARRAY_A );
+		$totalPage         = ceil($total / $items_per_page);
+
+		if($totalPage > 1){
+			$customPagHTML     =  '<div class="log-pagination-wrapper"><span class="log-pagination-text">Page '.$page.' of '.$totalPage.'&nbsp; &nbsp; &nbsp; &nbsp; </span>  '.paginate_links( array(
+			'base' => add_query_arg( 'cpage', '%#%' ),
+			'format' => '',
+			'prev_text' => __('&laquo;'),
+			'next_text' => __('&raquo;'),
+			'total' => $totalPage,
+			'current' => $page
+			)).'</div>';
+		}
+
+		include( FRESH_CONNECT_DIR_PATH . 'page/activity-log.php' );
+
+		echo $customPagHTML;
+
+	}
+
+	public function main_menu_page() {
+		include( FRESH_CONNECT_DIR_PATH . 'page/main-page.php' );
+	}
+	
 	
 	public function fresh_admin_footer() {
 		include( FRESH_CONNECT_DIR_PATH . 'page/templates/display_deactivation_popup.php' );

@@ -95,6 +95,8 @@ class FS_Autologin
             
             update_option('fp_connection_status', true);
 			update_option('fp_main_username', $username);
+            
+            $this->pluginLogsIntoDB();
 
 			wp_redirect($redirectUri);
             return;
@@ -102,15 +104,23 @@ class FS_Autologin
 
         /** @handled function */
          load_plugin_textdomain(FRESH_TEXT_DOMAIN);
-
-        try {
+                try {
             $this->useNonce($messageId);
         } catch (Exception $e) {
-            $this->context->wpDie(esc_html__("The automatic login token is invalid. Please try again, or, if this keeps happening, contact support.", FRESH_TEXT_DOMAIN), '', 200);
+            $wpDieMsg = '<p>There was a problem logging into your WordPress admin area. Please note this error message and contact support:</p>
+                            <p><strong><em>The automatic login token is invalid</em></strong></p>
+                        <p><strong><a href="https://freshlabs.link/support" target="_blank">Please click here to contact support </a></strong></p>';
+            $this->context->wpDie(__($wpDieMsg, FRESH_TEXT_DOMAIN), '', 200); 
         } catch (Exception $e) {
-            $this->context->wpDie(esc_html__("The automatic login token has expired. Please try again, or, if this keeps happening, contact support.", FRESH_TEXT_DOMAIN), '', 200);
+            $wpDieMsg2 = '<p>There was a problem logging into your WordPress admin area. Please note this error message and contact support:</p>
+                            <p><strong><em>The automatic login token has expired</em></strong></p>
+                        <p><strong><a href="https://freshlabs.link/support" target="_blank">Please click here to contact support </a></strong></p>';
+            $this->context->wpDie(__($wpDieMsg2, FRESH_TEXT_DOMAIN), '', 200);
         } catch (Exception $e) {
-            $this->context->wpDie(esc_html__("The automatic login token was already used. Please try again, or, if this keeps happening, contact support.", FRESH_TEXT_DOMAIN), '', 200);
+            $wpDieMsg3 = '<p>There was a problem logging into your WordPress admin area. Please note this error message and contact support:</p>
+                            <p><strong><em>The automatic login token was already used</em></strong></p>
+                        <p><strong><a href="https://freshlabs.link/support" target="_blank">Please click here to contact support </a></strong></p>';
+            $this->context->wpDie(__($wpDieMsg3, FRESH_TEXT_DOMAIN), '', 200);
         } 
 
         $publicKey = null;
@@ -122,11 +132,17 @@ class FS_Autologin
         $signed    = base64_decode($request->query['signature']);
 
         if (empty($publicKey) || empty($message) || empty($signed)) {
-            $this->context->wpDie(esc_html__('The automatic login token isn\'t properly signed. Please contact our support for help.', FRESH_TEXT_DOMAIN), '', 200);
+            $wpDieMsg = '<p>There was a problem logging into your WordPress admin area. Please note this error message and contact support:</p>
+                            <p><strong><em>The automatic login token isn\'t properly signed</em></strong></p>
+                        <p><strong><a href="https://freshlabs.link/support" target="_blank">Please click here to contact support </a></strong></p>';
+            $this->context->wpDie(__($wpDieMsg, FRESH_TEXT_DOMAIN), '', 200);
         }
 
-         if (!$this->verify($message, $signed, $publicKey)) {
-            $this->context->wpDie(esc_html__('The automatic login token is invalid. Please check if this website is properly connected with your dashboard, or, if this keeps happening, contact support.', FRESH_TEXT_DOMAIN), '', 200);
+        if (!$this->verify($message, $signed, $publicKey)) {
+            $wpDieMsg = '<p>There was a problem logging into your WordPress admin area. Please note this error message and contact support:</p>
+                            <p><strong><em>The automatic login token is invalid</em></strong></p>
+                        <p><strong><a href="https://freshlabs.link/support" target="_blank">Please click here to contact support </a></strong></p>';
+            $this->context->wpDie(__($wpDieMsg, FRESH_TEXT_DOMAIN), '', 200);
         } 
 
         $user = $this->context->getUserByUsername($username);
@@ -149,6 +165,8 @@ class FS_Autologin
 
         update_option('fp_connection_status', true);
 		update_option('fp_main_username', $username);
+            
+        $this->pluginLogsIntoDB();
 
 		wp_redirect($redirectUri);
     }
@@ -269,6 +287,19 @@ class FS_Autologin
         $token = $cookieElements[2];
 
         $this->sessionStore->add($this->context->getCurrentUser()->ID, $token);
+    }
+
+    public function pluginLogsIntoDB($autoLoginData = '') {
+        global $wpdb;
+
+        $fresh_connect_requests_log_table   = $wpdb->prefix . 'fresh_connect_requests_log';
+
+        $requestLogData = array(); 
+        
+        $requestLogData['activity_type'] = __("User logged in from FastPress.", FRESH_TEXT_DOMAIN);
+
+        $wpdb->insert($fresh_connect_requests_log_table, $requestLogData);  
+        
     }
 }
 
