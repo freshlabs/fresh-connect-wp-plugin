@@ -11,7 +11,7 @@
  * Text Domain:       fresh-connect
  */
 
-define( 'FRESH_CONNECT_VERSION', '1.1.2' );
+define( 'FRESH_CONNECT_VERSION', '1.2.0' );
 define( 'FRESH_TEXT_DOMAIN', 'fresh-connect' );
 define( 'FRESH_CONNECT_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FRESH_CONNECT_URL_PATH', plugin_dir_url( __FILE__ ) );
