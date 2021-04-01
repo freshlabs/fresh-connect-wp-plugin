@@ -46,7 +46,7 @@
 	
 	jQuery( document ).on('click', '.fc_delete_user_link', function(){
 		event.preventDefault();
-		alert("It is not possible to delete this admin user as it is required for FastPress");
+		alert("It is not possible to delete this admin user as it is required for Fresh Cloud");
     });
 
     jQuery( document ).on('click', '.fc-bulk-action', function(){
@@ -85,7 +85,7 @@
             return false;
         }
 
-        if( confirm('Are you sure you want to update the Fresh Connect Key? This can break your websites connection to FastPress and should only be done under the instruction of the Fresh Labs support team.') ){
+        if( confirm('Are you sure you want to update the Fresh Connect Key? This can break your websites connection to Fresh Cloud and should only be done under the instruction of the Fresh Labs support team.') ){
             return true;
         }
         else{

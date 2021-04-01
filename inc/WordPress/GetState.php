@@ -39,7 +39,7 @@ class Fastpress_Action_GetState
 	
 	private $context;
 	
-	public function __construct(FastPress_Context $context)
+	public function __construct(FreshCloud_Context $context)
     {
         $this->context = $context;
     }
@@ -149,7 +149,7 @@ class Fastpress_Action_GetState
             'fetchActivatedAt'     => true,
         );
 
-        $pluginProvider    = new FastPress_Provider_Plugin($this->context);
+        $pluginProvider    = new FreshCloud_Provider_Plugin($this->context);
         $plugins           = $pluginProvider->fetch($options);
 
         if ($options['fetchAvailableUpdate']) {
@@ -183,7 +183,7 @@ class Fastpress_Action_GetState
     {
         require_once(FRESH_CONNECT_DIR_PATH .'inc/WordPress/Provider/Plugin.php');
         
-        $pluginProvider    = new FastPress_Provider_Plugin($this->context);
+        $pluginProvider    = new FreshCloud_Provider_Plugin($this->context);
         $plugins           = $pluginProvider->edit_plugins($options);
         
         return $plugins;
@@ -199,7 +199,7 @@ class Fastpress_Action_GetState
             'fetchAvailableUpdate' => false,
         );
 
-        $themeProvider     = new FastPress_Provider_Theme($this->context);
+        $themeProvider     = new FreshCloud_Provider_Theme($this->context);
         $themes            = $themeProvider->fetch($options);
 
         if ($options['fetchAvailableUpdate']) {
@@ -225,7 +225,7 @@ class Fastpress_Action_GetState
 	{
 		require_once(FRESH_CONNECT_DIR_PATH .'inc/WordPress/Provider/Theme.php');
 		
-		$themeProvider     = new FastPress_Provider_Theme($this->context);
+		$themeProvider     = new FreshCloud_Provider_Theme($this->context);
         $return            = $themeProvider->edit_themes($options);
 		
 		return $return;

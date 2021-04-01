@@ -16,7 +16,7 @@ class Fastpress_Updater_UpdateManager
 
     private $themeInfo;
 
-    public function __construct(FastPress_Context $context)
+    public function __construct(FreshCloud_Context $context)
     {
         $this->context = $context;
         $this->reload();

@@ -1,6 +1,6 @@
 <div class="wrap about-wrap full-width-layout fresh-connect-page">
 	<h1><?php esc_html_e('Welcome to the Fresh Connect', FRESH_TEXT_DOMAIN); ?></h1>
-	<p><?php _e('The Fresh Connect Plugin connects your WordPress blog with the FastPress cloud hosting platform.', FRESH_TEXT_DOMAIN); ?></p>
+	<p><?php _e('The Fresh Connect Plugin connects your WordPress blog with the Fresh Cloud platform.', FRESH_TEXT_DOMAIN); ?></p>
 
 	<p><?php _e('This gives you many powerful features including one click login (no more frustration losing passwords!) and powerful statistics that you can use to drive your website forward.', FRESH_TEXT_DOMAIN); ?></p>
 	

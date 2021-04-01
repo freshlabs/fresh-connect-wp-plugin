@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-class FastPress_Provider_Theme
+class FreshCloud_Provider_Theme
 {
     const STATUS_ACTIVE = 'active';
 
@@ -15,7 +15,7 @@ class FastPress_Provider_Theme
 
     private $context;
 
-    public function __construct(FastPress_Context $context)
+    public function __construct(FreshCloud_Context $context)
     {
         $this->context = $context;
     }

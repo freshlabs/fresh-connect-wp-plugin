@@ -17,7 +17,7 @@ class API
 	private $error = false;
 	private $post = array();
 	
-	public function __construct(FastPress_Context $context, Fastpress_Action_GetState $getstate, $fp_status, $con_key)
+	public function __construct(FreshCloud_Context $context, Fastpress_Action_GetState $getstate, $fp_status, $con_key)
     {
         $this->context = $context;
 		$this->fp_status = $fp_status;

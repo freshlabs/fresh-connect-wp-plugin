@@ -1,13 +1,13 @@
 <?php
 
-class FastPress_SessionStore
+class FreshCloud_SessionStore
 {
 
     private $context;
 
     private $sessionsKey = 'fastpress_sessions';
 
-    public function __construct(FastPress_Context $context)
+    public function __construct(FreshCloud_Context $context)
     {
         $this->context = $context;
     }

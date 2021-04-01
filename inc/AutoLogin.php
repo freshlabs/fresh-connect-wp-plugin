@@ -7,7 +7,7 @@ class FS_Autologin
     private $nonceValidFor;
     private $nonceBlacklistedFor;
 
-	public function __construct(FastPress_Context $context, FastPress_SessionStore $sessionStore, $nonceValidFor = 43200, $nonceBlacklistedFor = 86400)
+	public function __construct(FreshCloud_Context $context, FreshCloud_SessionStore $sessionStore, $nonceValidFor = 43200, $nonceBlacklistedFor = 86400)
     {
         $this->context       = $context;
 		$this->sessionStore  = $sessionStore;
@@ -16,7 +16,7 @@ class FS_Autologin
     }
     function checkLoginToken()
     {
-        $request = FastPress_Request::createFromGlobals();
+        $request = FreshCloud_Request::createFromGlobals();
 
         if ($request->getMethod() !== 'GET') {
             return;
@@ -296,15 +296,15 @@ class FS_Autologin
 
         $requestLogData = array(); 
         
-        $requestLogData['activity_type'] = __("User logged in from FastPress.", FRESH_TEXT_DOMAIN);
+        $requestLogData['activity_type'] = __("User logged in from Fresh Cloud.", FRESH_TEXT_DOMAIN);
 
         $wpdb->insert($fresh_connect_requests_log_table, $requestLogData);  
         
     }
 }
 
-$context = new FastPress_Context();
-$sessionstore = new FastPress_SessionStore($context);
+$context = new FreshCloud_Context();
+$sessionstore = new FreshCloud_SessionStore($context);
 $authrequest = new FS_Autologin($context, $sessionstore);
 $authrequest->checkLoginToken();
 ?>

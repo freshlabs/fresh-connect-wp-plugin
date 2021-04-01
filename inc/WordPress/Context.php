@@ -3,7 +3,7 @@
  * Proxy class for WordPress' function calls. This is the only class that should be able to use WordPress' internal functions.
  * The rule of thumb is that if a function does not exist since WordPress 3.0.0, it should be defined here.
  */
-class FastPress_Context
+class FreshCloud_Context
 {
 
     private $context;

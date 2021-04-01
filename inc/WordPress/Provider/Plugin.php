@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-class FastPress_Provider_Plugin
+class FreshCloud_Provider_Plugin
 {
 
     const STATUS_ACTIVE_NETWORK = 'active-network';
@@ -20,7 +20,7 @@ class FastPress_Provider_Plugin
 
     private $context;
 
-    public function __construct(FastPress_Context $context)
+    public function __construct(FreshCloud_Context $context)
     {
         $this->context = $context;
     }

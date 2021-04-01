@@ -88,12 +88,12 @@ msgstr ""
 #: inc/ClassFreshConnect.php:198
 msgid ""
 "It is not possible to change the role for this admin user as it is required "
-"for FastPress"
+"for Fresh Cloud"
 msgstr ""
 
 #: inc/ClassFreshConnect.php:204
 msgid ""
-"It is not possible to delete this admin user as it is required for FastPress"
+"It is not possible to delete this admin user as it is required for Fresh Cloud"
 msgstr ""
 
 #: inc/ClassFreshConnect.php:210
@@ -543,12 +543,12 @@ msgid "Error: [%1$s] %2$s"
 msgstr ""
 
 #: page/about-us.php:6
-msgid "What is FastPress?"
+msgid "What is Fresh Cloud?"
 msgstr ""
 
 #: page/about-us.php:7
 msgid ""
-"FastPress is a cutting edge cloud hosting platform for your WordPress "
+"Fresh Cloud is a cutting edge cloud hosting platform for your WordPress "
 "websites."
 msgstr ""
 
@@ -593,7 +593,7 @@ msgstr ""
 #: page/about-us.php:19
 #, php-format
 msgid ""
-"Not yet a FastPress member? <a href=\"%s\" target=\"_blank\">Join here and "
+"Not yet a Fresh Cloud member? <a href=\"%s\" target=\"_blank\">Join here and "
 "get started instantly</a>"
 msgstr ""
 
@@ -604,19 +604,19 @@ msgstr ""
 #: page/about-us.php:28
 msgid ""
 "Fresh Connect creates a super secure link between your website and your "
-"FastPress account. This allows you to do things like:"
+"Fresh Cloud account. This allows you to do things like:"
 msgstr ""
 
 #: page/about-us.php:31
-msgid "Login to your website with a single click from your FastPress account"
+msgid "Login to your website with a single click from your Fresh Cloud account"
 msgstr ""
 
 #: page/about-us.php:32
-msgid "See your website health directly in your FastPress account"
+msgid "See your website health directly in your Fresh Cloud account"
 msgstr ""
 
 #: page/about-us.php:33
-msgid "See your other FastPress websites inside your WordPress admin area"
+msgid "See your other Fresh Cloud websites inside your WordPress admin area"
 msgstr ""
 
 #: page/about-us.php:34
@@ -630,7 +630,7 @@ msgstr ""
 
 #: page/about-us.php:38
 msgid ""
-"The Fresh Connect plugin is installed automatically when you use FastPress. "
+"The Fresh Connect plugin is installed automatically when you use Fresh Cloud. "
 "While the plugin is not required, we strongly recommend you use it to give "
 "you the extra benefits above."
 msgstr ""
@@ -641,14 +641,14 @@ msgstr ""
 
 #: page/about-us.php:45
 msgid ""
-"We create a secure, industry standard link between your FastPress account "
+"We create a secure, industry standard link between your Fresh Cloud account "
 "and your WordPress website using Fresh Connect."
 msgstr ""
 
 #: page/about-us.php:47
 msgid ""
 "Your data is only visible in any form to you via your WordPress website and "
-"FastPress account area. We (Fresh Labs) do not access, share or otherwise "
+"Fresh Cloud account area. We (Fresh Labs) do not access, share or otherwise "
 "use your data in any way."
 msgstr ""
 
@@ -656,8 +656,8 @@ msgstr ""
 #, php-format
 msgid ""
 "We take your privacy and security seriously. For more detailed information "
-"please see our <a href=\"%1$s\" target=\"_blank\">FastPress Privacy Policy</"
-"a> and <a href=\"%2$s\" target=\"_blank\">FastPress Terms of Use</a>"
+"please see our <a href=\"%1$s\" target=\"_blank\">Fresh Cloud Privacy Policy</"
+"a> and <a href=\"%2$s\" target=\"_blank\">Fresh Cloud Terms of Use</a>"
 msgstr ""
 
 #: page/about-us.php:58
@@ -674,7 +674,7 @@ msgstr ""
 #, php-format
 msgid ""
 "Check out our Facebook Mastermind Group, exclusively for members of Fresh "
-"Labs products like FastPress: <a href=\"%s\" target=\"_blank\">Join \"Fresh "
+"Labs products like Fresh Cloud: <a href=\"%s\" target=\"_blank\">Join \"Fresh "
 "Mastermind\" Facebook Group</a>"
 msgstr ""
 
@@ -700,7 +700,7 @@ msgstr ""
 
 #: page/main-page.php:3
 msgid ""
-"The Fresh Connect Plugin connects your WordPress blog with the FastPress "
+"The Fresh Connect Plugin connects your WordPress blog with the Fresh Cloud "
 "cloud hosting platform."
 msgstr ""
 
@@ -720,14 +720,14 @@ msgid "About this Plugin"
 msgstr ""
 
 #: page/status.php:4
-msgid "FastPress Connection Status"
+msgid "Fresh Cloud Connection Status"
 msgstr ""
 
 #: page/status.php:5
 #, php-format
 msgid ""
-"This page is for manually fixing the connection between FastPress and your "
-"website. This is typically only used by the FastPress support team - please "
+"This page is for manually fixing the connection between Fresh Cloud and your "
+"website. This is typically only used by the Fresh Cloud support team - please "
 "do not enter anything on this page unless requested to do so. If you think "
 "the connection to your site is broken, please <a href=\"%s\" target=\"_blank"
 "\">Contact Support</a>"
@@ -765,7 +765,7 @@ msgstr ""
 
 #: page/templates/display_deactivation_popup.php:8
 msgid ""
-"The Fresh Connect plugin provides a secure connection between your FastPress "
+"The Fresh Connect plugin provides a secure connection between your Fresh Cloud "
 "account and your website. Disabling this plugin will remove key features "
 "such as one click login."
 msgstr ""
@@ -782,7 +782,7 @@ msgstr ""
 
 #: uninstall.php:7
 msgid ""
-"The Fresh Connect plugin provides a secure connection between your FastPress "
+"The Fresh Connect plugin provides a secure connection between your Fresh Cloud "
 "account and your website. You can not delete this plugin. If you need any "
 "help, please contact the Fresh Team for support"
 msgstr ""

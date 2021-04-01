@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Fresh Connect
  * Plugin URI:        https://freshlabs.link/freshconnect
- * Description:       The Fresh Connect plugin connects your blog with the FastPress cloud hosting platform, allowing 1 click logins and powerful statistics. Please see the about page for more information.
+ * Description:       The Fresh Connect plugin connects your blog with the Fresh Cloud platform, allowing 1 click logins and powerful statistics. Please see the about page for more information.
  * Version:           1.2.0
  * Author:            Fresh Labs
  * Author URI:        https://freshlabs.link/freshlabs
@@ -169,7 +169,7 @@ function fp_api_callback( $request ) {
 	$fp_status = get_option('fresh_connect_status');
 	$con_key = get_option('fp_connection_keys');
 	
-	$context = new FastPress_Context();
+	$context = new FreshCloud_Context();
 	$getstate = new Fastpress_Action_GetState($context);
 	$api = new API($context, $getstate, $fp_status, $con_key);
 	$data = $api->initialize( $parameters );

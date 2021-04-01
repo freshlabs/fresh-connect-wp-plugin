@@ -263,13 +263,13 @@ class Fresh_Connect_Admin {
 		global $pagenow;
 		
 		if ( $pagenow == 'users.php' && isset($_REQUEST['fcuser_role']) ) {
-			$message = __( 'It is not possible to change the role for this admin user as it is required for FastPress', FRESH_TEXT_DOMAIN );
+			$message = __( 'It is not possible to change the role for this admin user as it is required for Fresh Cloud', FRESH_TEXT_DOMAIN );
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $this->warning_notice ), esc_html( $message ) ); 
 		}
 		
 		if ( $pagenow == 'users.php' && isset($_REQUEST['fcuser_delete']) ) {
-			$message = __( 'It is not possible to delete this admin user as it is required for FastPress', FRESH_TEXT_DOMAIN );
+			$message = __( 'It is not possible to delete this admin user as it is required for Fresh Cloud', FRESH_TEXT_DOMAIN );
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $this->warning_notice ), esc_html( $message ) ); 
         }

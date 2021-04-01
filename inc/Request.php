@@ -1,8 +1,8 @@
 <?php
 /**
- * Class FastPress_Request
+ * Class FreshCloud_Request
  */
-class FastPress_Request
+class FreshCloud_Request
 {
     public $query;
     public $request;
@@ -62,9 +62,9 @@ class FastPress_Request
     }
 
     /**
-     * FastPress factory.
+     * FreshCloud factory.
      *
-     * @return FastPress_Request
+     * @return FreshCloud_Request
      */
     public static function createFromGlobals()
     {
